@@ -13,6 +13,8 @@
  */
 var WeixinApi = (function () {
 
+    "use strict";
+
     /**
      * 分享到微信朋友圈
      * @param       {Object}    data       待分享的信息
@@ -64,14 +66,14 @@ var WeixinApi = (function () {
         };
         WeixinJSBridge.on('menu:share:timeline', function (argv) {
             if (callbacks.async && callbacks.ready) {
-                if(!callbacks.__dataLoadedFuncInited) {
-                    var loadedCb = callbacks.dataLoaded || new Function();
-                    callbacks.dataLoaded = function (newData) {
-                        loadedCb(newData);
-                        shareTimeline(newData);
-                    };
-                    callbacks.__dataLoadedFuncInited = true;
+                window["_wx_loadedCb_"] = callbacks.dataLoaded || new Function();
+                if(window["_wx_loadedCb_"].toString().indexOf("_wx_loadedCb_") > 0) {
+                    window["_wx_loadedCb_"] = new Function();
                 }
+                callbacks.dataLoaded = function (newData) {
+                    window["_wx_loadedCb_"](newData);
+                    shareTimeline(newData);
+                };
                 // 然后就绪
                 callbacks.ready && callbacks.ready(argv);
             } else {
@@ -133,14 +135,14 @@ var WeixinApi = (function () {
         };
         WeixinJSBridge.on('menu:share:appmessage', function (argv) {
             if (callbacks.async && callbacks.ready) {
-                if(!callbacks.__dataLoadedFuncInited) {
-                    var loadedCb = callbacks.dataLoaded || new Function();
-                    callbacks.dataLoaded = function (newData) {
-                        loadedCb(newData);
-                        sendAppMessage(newData);
-                    };
-                    callbacks.__dataLoadedFuncInited = true;
+                window["_wx_loadedCb_"] = callbacks.dataLoaded || new Function();
+                if(window["_wx_loadedCb_"].toString().indexOf("_wx_loadedCb_") > 0) {
+                    window["_wx_loadedCb_"] = new Function();
                 }
+                callbacks.dataLoaded = function (newData) {
+                    window["_wx_loadedCb_"](newData);
+                    sendAppMessage(newData);
+                };
                 // 然后就绪
                 callbacks.ready && callbacks.ready(argv);
             } else {
@@ -200,14 +202,14 @@ var WeixinApi = (function () {
         };
         WeixinJSBridge.on('menu:share:weibo', function (argv) {
             if (callbacks.async && callbacks.ready) {
-                if(!callbacks.__dataLoadedFuncInited) {
-                    var loadedCb = callbacks.dataLoaded || new Function();
-                    callbacks.dataLoaded = function (newData) {
-                        loadedCb(newData);
-                        shareWeibo(newData);
-                    };
-                    callbacks.__dataLoadedFuncInited = true;
+                window["_wx_loadedCb_"] = callbacks.dataLoaded || new Function();
+                if(window["_wx_loadedCb_"].toString().indexOf("_wx_loadedCb_") > 0) {
+                    window["_wx_loadedCb_"] = new Function();
                 }
+                callbacks.dataLoaded = function (newData) {
+                    window[wxLoadedCbKey](newData);
+                    shareWeibo(newData);
+                };
                 // 然后就绪
                 callbacks.ready && callbacks.ready(argv);
             } else {
@@ -221,7 +223,7 @@ var WeixinApi = (function () {
     /**
      * 调起微信Native的图片播放组件。
      * 这里必须对参数进行强检测，如果参数不合法，直接会导致微信客户端crash
-     * 
+     *
      * @param {String} curSrc 当前播放的图片地址
      * @param {Array} srcList 图片地址列表
      */
@@ -315,7 +317,7 @@ var WeixinApi = (function () {
     }
 
     return {
-        version         :"1.4",
+        version         :"1.5",
         ready           :wxJsBridgeReady,
         shareToTimeline :weixinShareTimeline,
         shareToWeibo    :weixinShareWeibo,
