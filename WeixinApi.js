@@ -207,7 +207,7 @@ var WeixinApi = (function () {
                     window["_wx_loadedCb_"] = new Function();
                 }
                 callbacks.dataLoaded = function (newData) {
-                    window[wxLoadedCbKey](newData);
+                    window["_wx_loadedCb_"](newData);
                     shareWeibo(newData);
                 };
                 // 然后就绪
