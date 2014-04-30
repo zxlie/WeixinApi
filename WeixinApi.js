@@ -291,6 +291,13 @@ var WeixinApi = (function () {
     }
 
     /**
+     * 关闭当前微信公众平台页面
+     */
+    function closeWindow() {
+        WeixinJSBridge.call("closeWindow");
+    }
+
+    /**
      * 当页面加载完毕后执行，使用方法：
      * WeixinApi.ready(function(Api){
      *     // 从这里只用Api即是WeixinApi
@@ -317,7 +324,7 @@ var WeixinApi = (function () {
     }
 
     return {
-        version         :"1.5",
+        version         :"1.6",
         ready           :wxJsBridgeReady,
         shareToTimeline :weixinShareTimeline,
         shareToWeibo    :weixinShareWeibo,
@@ -327,6 +334,7 @@ var WeixinApi = (function () {
         showToolbar     :showToolbar,
         hideToolbar     :hideToolbar,
         getNetworkType  :getNetworkType,
-        imagePreview    :imagePreview
+        imagePreview    :imagePreview,
+        closeWindow     :closeWindow
     };
 })();
