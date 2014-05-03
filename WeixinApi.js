@@ -8,6 +8,7 @@
  * 5、隐藏/显示底部浏览器工具栏
  * 6、获取当前的网络状态
  * 7、调起微信客户端的图片播放组件
+ * 8、关闭公众平台Web页面
  *
  * @author zhaoxianlie(http://www.baidufe.com)
  */

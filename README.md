@@ -9,9 +9,12 @@
 	5、隐藏/显示底部浏览器工具栏
 	6、获取当前的网络状态
 	7、调起微信客户端的图片播放组件
+	8、关闭公众平台Web页面
 
 ### 2、如何使用？
-使用起来比较简单，具体可参考demo.html，如：
+使用起来比较简单，具体可参考demo.html
+
+#### 1）、分享
 ```javascript
 WeixinApi.ready(function(Api) {
 
@@ -65,6 +68,65 @@ WeixinApi.ready(function(Api) {
 });
 ```
 
+#### 2）、隐藏右上角option menu入口
+```javascript
+WeixinApi.ready(function(Api) {
+	// 隐藏
+	Api.hideOptionMenu();
+	
+	// 显示
+	// Api.showOptionMenu();
+});
+```
+
+#### 3）、隐藏底部工具栏
+```javascript
+WeixinApi.ready(function(Api) {
+	// 隐藏
+	Api.hideToolbar();
+	
+	// 显示
+	// Api.showToolbar();
+});
+```
+
+#### 4）、获取当前的网络类型
+```javascript
+WeixinApi.ready(function(Api) {
+	Api.getNetworkType(function(network){
+		/**
+		 * network取值：
+		 *
+		 * network_type:wifi     wifi网络
+	     * network_type:edge     非wifi,包含3G/2G
+	     * network_type:fail     网络断开连接
+	     * network_type:wwan     2g或者3g
+	     */
+	});
+});
+```
+
+#### 5）、调起客户端图片播放组件
+```javascript
+WeixinApi.ready(function(Api) {
+	// 需要播放的图片src list
+	var srcList = [src1, src2, ..., srcN];
+	// 选一个作为当前需要展示的图片src
+	var curSrc = src1;
+	// 调起
+	Api.imagePreview(curSrc, srcList);
+});
+```
+
+#### 6）、关掉当前微信公众页面窗口
+```javascript
+WeixinApi.ready(function(Api) {	
+	// 关闭窗口
+	Api.closeWindow();
+});
+```
+
+### 其他
 详细的使用场景，可以到这里获取：http://www.baidufe.com/item/f07a3be0b23b4c9606bb.html
 
 注意：这只是发烧版本，非微信官方出品！有问题可大家一起来讨论，我很乐意与大家一起来完善这个API。
