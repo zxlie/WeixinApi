@@ -7,9 +7,85 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
+		<style type="text/css">
+			button {
+				margin: 10px;
+			}
+		</style>
 		<script type="text/javascript" src="WeixinApi.js"></script>
+	</head>
+	<body>
+		<p>这是一个测试页面！请直接分享到微信好友、朋友圈、腾讯微博看效果吧！</p>
+		<p>如果你是扫一扫过来的，可以复制连接，然后发给任何一个微信好友，再点击连接进入测试</p>
+		<p>
+			<button id="optionMenu">WeixinApi.hideOptionMenu</button>
+		</p>	
+		<p>
+			<button id="toolbar">WeixinApi.hideToolbar</button>
+		</p>	
+		<p>
+			<button id="networkType">WeixinApi.getNetworkType</button>
+		</p>
+		<p>
+			<button id="imagePreview">WeixinApi.imagePreview</button>
+		</p>
 
 		<script type="text/javascript">
+
+			// 给按钮增加click事件：请不要太纠结这个写法，demo而已
+			var addEvent = function(elId,listener){
+				document.getElementById(elId)
+					.addEventListener('click',function(e){
+						if(!window.WeixinApi || !window.WeixinJSBridge) {
+							alert('请确认您是在微信内置浏览器中打开的，并且WeixinApi.js已正确引用');
+							e.preventDefault();
+							return false;
+						}
+						listener(this,e);
+					},false);
+			};
+
+			// 两个Flag
+			var optionMenuOn = true;
+			var toolbarOn = true;
+
+			// optionMenu的控制
+			addEvent('optionMenu',function(el,e){
+				if(optionMenuOn) {
+					el.innerHTML = "WeixinApi.showOptionMenu";
+					WeixinApi.hideOptionMenu();
+				}else{
+					el.innerHTML = "WeixinApi.hideOptionMenu";
+					WeixinApi.showOptionMenu();
+				}
+				optionMenuOn = !optionMenuOn;
+			});
+
+			// toolbar的控制
+			addEvent('toolbar',function(el,e){
+				if(toolbarOn) {
+					el.textContent = "WeixinApi.showToolbar";
+					WeixinApi.hideToolbar();
+				}else{
+					el.textContent = "WeixinApi.hideToolbar";
+					WeixinApi.showToolbar();
+				}
+				toolbarOn = !toolbarOn;
+			});
+
+			// 获取网络类型
+			addEvent('networkType',function(el,e){
+				WeixinApi.getNetworkType(function(network) {
+					alert("当前网络类型：" + network);
+				});
+			});
+
+			// 调起客户端的图片播放组件
+			addEvent('imagePreview',function(el,e){
+				location.href = "http://www.baidufe.com/wximage?tag=%E7%BE%8E%E5%A5%B3";
+			});
+			
+			// 需要分享的内容，请放到ready里
 			WeixinApi.ready(function(Api) {
 
 				// 微信分享的数据
@@ -59,10 +135,14 @@
 
 				// 点击分享到腾讯微博，会执行下面这个代码
 				Api.shareToWeibo(wxData, wxCallbacks);
+
+				// 有可能用户是直接用微信“扫一扫”打开的，这个情况下，optionMenu是off状态
+				// 为了方便用户测试，我先来trigger show一下
+				var elOptionMenu = document.getElementById('optionMenu');
+				elOptionMenu.click(); // 先隐藏
+				elOptionMenu.click(); // 再显示
 			});
+
 		</script>
-	</head>
-	<body>
-		这是一个测试页面！请直接分享到微信好友、朋友圈、腾讯微博看效果吧！
 	</body>
 </html>

@@ -11,8 +11,12 @@
 	7、调起微信客户端的图片播放组件
 	8、关闭公众平台Web页面
 
+你可以用微信的“扫一扫”来打开下面这个二维码体验一把：
+
+![Weixin Api Demo](http://www.baidufe.com/upload/images/2014-05-09_17-38-45_8.png)
+
 ### 2、如何使用？
-使用起来比较简单，具体可参考demo.html
+使用起来比较简单，具体可参考demo.html中的实现
 
 #### 1）、分享
 ```javascript
@@ -126,7 +130,7 @@ WeixinApi.ready(function(Api) {
 });
 ```
 
-### 其他
+### 3、其他
 详细的使用场景，可以到这里获取：http://www.baidufe.com/item/f07a3be0b23b4c9606bb.html
 
 注意：这只是发烧版本，非微信官方出品！有问题可大家一起来讨论，我很乐意与大家一起来完善这个API。
