@@ -122,6 +122,23 @@ WeixinApi.ready(function(Api) {
 });
 ```
 
+调起客户端图片播放组件，还有一种更屌的方法，不需要依赖这个WeixinApi，直接a标签实现就行，具体格式：
+
+
+	<a href="weixin://viewimage/`YourImageURL`">AnyThing</a>
+
+
+我们可以用A标签来嵌套这个img，具体Demo如下：
+
+```html
+<a href="weixin://viewimage/http://www.baidu.com/img/bdlogo.gif">
+	<img src="http://www.baidu.com/img/bdlogo.gif">
+</a>
+<a href="weixin://viewimage/http://tb2.bdstatic.com/tb/static-common/img/search_logo_big_6a13b553.gif">
+	<img src="http://tb2.bdstatic.com/tb/static-common/img/search_logo_big_6a13b553.gif">
+</a>
+```
+
 #### 6）、关掉当前微信公众页面窗口
 ```javascript
 WeixinApi.ready(function(Api) {	
