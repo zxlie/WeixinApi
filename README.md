@@ -13,7 +13,7 @@
 
 你可以用微信的“扫一扫”来打开下面这个二维码体验一把：
 
-![Weixin Api Demo](http://www.baidufe.com/upload/images/2014-05-09_17-38-45_8.png)
+![Weixin Api Demo](http://www.baidufe.com/upload/images/2014-06-14_3.47.02.png)
 
 ### 2、如何使用？
 使用起来比较简单，具体可参考demo.html中的实现

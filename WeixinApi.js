@@ -157,10 +157,8 @@ var WeixinApi = (function () {
     /**
      * 分享到腾讯微博
      * @param       {Object}    data       待分享的信息
-     * @p-config    {String}    imageUrl   图片地址
      * @p-config    {String}    link       链接地址
      * @p-config    {String}    desc       描述
-     * @p-config    {String}    title      分享的标题
      *
      * @param       {Object}    callbacks  相关回调方法
      * @p-config    {Boolean}   async                   ready方法是否需要异步执行，默认false
@@ -176,11 +174,7 @@ var WeixinApi = (function () {
         var shareWeibo = function (theData) {
             WeixinJSBridge.invoke('shareWeibo', {
                 "content":theData.desc,
-                "link":theData.link,
-                "img_url":theData.imgUrl,
-                "title":theData.title,
-                "img_width":"120",
-                "img_height":"120"
+                "link":theData.link
             }, function (resp) {
                 switch (resp.err_msg) {
                     // share_weibo:cancel 用户取消
@@ -325,7 +319,7 @@ var WeixinApi = (function () {
     }
 
     return {
-        version         :"1.6",
+        version         :"1.7",
         ready           :wxJsBridgeReady,
         shareToTimeline :weixinShareTimeline,
         shareToWeibo    :weixinShareWeibo,
