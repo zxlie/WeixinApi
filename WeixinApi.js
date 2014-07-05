@@ -174,7 +174,7 @@ var WeixinApi = (function () {
         var shareWeibo = function (theData) {
             WeixinJSBridge.invoke('shareWeibo', {
                 "content":theData.desc,
-                "link":theData.link
+                "url":theData.link
             }, function (resp) {
                 switch (resp.err_msg) {
                     // share_weibo:cancel 用户取消
@@ -319,7 +319,7 @@ var WeixinApi = (function () {
     }
 
     return {
-        version         :"1.7",
+        version         :"1.8",
         ready           :wxJsBridgeReady,
         shareToTimeline :weixinShareTimeline,
         shareToWeibo    :weixinShareWeibo,
