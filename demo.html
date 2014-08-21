@@ -3,13 +3,15 @@
 	<head>
 		<title>微信Js API Demo</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="dns-prefetch" href="http://mmbiz.qpic.cn">
+        <link rel="dns-prefetch" href="http://res.wx.qq.com">
 		<meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0;">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="format-detection" content="telephone=no">
 		<style type="text/css">
-			button {
-				margin: 10px;
+			p {
+				padding: 5px 10px;
 			}
 		</style>
 		<script type="text/javascript" src="WeixinApi.js"></script>
@@ -32,6 +34,10 @@
 		<p>
 		    <button id="closeWindow">WeixinApi.closeWindow</button>
 		</p>
+
+        <p>
+            <a href="?">点击这里刷新！！！！</a>
+        </p>
 
 		<script type="text/javascript">
 
@@ -115,23 +121,23 @@
 		            // 分享被用户自动取消
 		            cancel : function(resp) {
 		                // 你可以在你的页面上给用户一个小Tip，为什么要取消呢？
-		                alert("分享被取消");
+		                alert("分享被取消，msg=" + resp.err_msg);
 		            },
 		            // 分享失败了
 		            fail : function(resp) {
 		                // 分享失败了，是不是可以告诉用户：不要紧，可能是网络问题，一会儿再试试？
-		                alert("分享失败");
+		                alert("分享失败，msg=" + resp.err_msg);
 		            },
 		            // 分享成功
 		            confirm : function(resp) {
 		                // 分享成功了，我们是不是可以做一些分享统计呢？
-		                //window.location.href='http://192.168.1.128:8080/wwyj/test.html';
-		                alert("分享成功");
+		                alert("分享成功，msg=" + resp.err_msg);
 		            },
 		            // 整个分享过程结束
-		            all : function(resp) {
+		            all : function(resp,argv) {
 		                // 如果你做的是一个鼓励用户进行分享的产品，在这里是不是可以给用户一些反馈了？
-		                alert("分享结束");
+		                alert("分享结束，msg=" + resp.err_msg);
+                        alert(_WXJS);
 		            }
 		        };
 
