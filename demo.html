@@ -134,10 +134,9 @@
 		                alert("分享成功，msg=" + resp.err_msg);
 		            },
 		            // 整个分享过程结束
-		            all : function(resp,argv) {
+		            all : function(resp,shareTo) {
 		                // 如果你做的是一个鼓励用户进行分享的产品，在这里是不是可以给用户一些反馈了？
-		                alert("分享结束，msg=" + resp.err_msg);
-                        alert(_WXJS);
+		                alert("分享" + (shareTo ? "到" + shareTo : "") + "结束，msg=" + resp.err_msg);
 		            }
 		        };
 
@@ -149,6 +148,9 @@
 
 		        // 点击分享到腾讯微博，会执行下面这个代码
 		        Api.shareToWeibo(wxData, wxCallbacks);
+
+                // iOS上，可以直接调用这个API进行分享，一句话搞定
+                Api.generalShare(wxData,wxCallbacks);
 
 		        // 有可能用户是直接用微信“扫一扫”打开的，这个情况下，optionMenu、toolbar都是off状态
 		        // 为了方便用户测试，我先来trigger show一下

@@ -4,11 +4,12 @@
  * 1、分享到微信朋友圈
  * 2、分享给微信好友
  * 3、分享到腾讯微博
- * 4、隐藏/显示右上角的菜单入口
- * 5、隐藏/显示底部浏览器工具栏
- * 6、获取当前的网络状态
- * 7、调起微信客户端的图片播放组件
- * 8、关闭公众平台Web页面
+ * 4、新的分享接口，包含朋友圈、好友、微博的分享（for iOS）
+ * 5、隐藏/显示右上角的菜单入口
+ * 6、隐藏/显示底部浏览器工具栏
+ * 7、获取当前的网络状态
+ * 8、调起微信客户端的图片播放组件
+ * 9、关闭公众平台Web页面
  *
  * @author zhaoxianlie(http://www.baidufe.com)
  */
@@ -20,7 +21,7 @@ var WeixinApi = (function () {
      * 分享到微信朋友圈
      * @param       {Object}    data       待分享的信息
      * @p-config    {String}    appId      公众平台的appId（服务号可用）
-     * @p-config    {String}    imageUrl   图片地址
+     * @p-config    {String}    imgUrl     图片地址
      * @p-config    {String}    link       链接地址
      * @p-config    {String}    desc       描述
      * @p-config    {String}    title      分享的标题
@@ -43,8 +44,8 @@ var WeixinApi = (function () {
                 "link":theData.link,
                 "desc":theData.title,
                 "title":theData.desc, // 注意这里要分享出去的内容是desc
-                "img_width":"120",
-                "img_height":"120"
+                "img_width":"640",
+                "img_height":"640"
             }, function (resp) {
                 switch (resp.err_msg) {
                     // share_timeline:cancel 用户取消
@@ -90,7 +91,7 @@ var WeixinApi = (function () {
      * 发送给微信上的好友
      * @param       {Object}    data       待分享的信息
      * @p-config    {String}    appId      公众平台的appId（服务号可用）
-     * @p-config    {String}    imageUrl   图片地址
+     * @p-config    {String}    imgUrl     图片地址
      * @p-config    {String}    link       链接地址
      * @p-config    {String}    desc       描述
      * @p-config    {String}    title      分享的标题
@@ -113,8 +114,8 @@ var WeixinApi = (function () {
                 "link":theData.link,
                 "desc":theData.desc,
                 "title":theData.title,
-                "img_width":"120",
-                "img_height":"120"
+                "img_width":"640",
+                "img_height":"640"
             }, function (resp) {
                 switch (resp.err_msg) {
                     // send_app_msg:cancel 用户取消
@@ -214,6 +215,86 @@ var WeixinApi = (function () {
                 // 就绪状态
                 callbacks.ready && callbacks.ready(argv);
                 shareWeibo(data);
+            }
+        });
+    }
+
+
+    /**
+     * 新的分享接口
+     * @param       {Object}    data       待分享的信息
+     * @p-config    {String}    appId      公众平台的appId（服务号可用）
+     * @p-config    {String}    imgUrl     图片地址
+     * @p-config    {String}    link       链接地址
+     * @p-config    {String}    desc       描述
+     * @p-config    {String}    title      分享的标题
+     *
+     * @param       {Object}    callbacks  相关回调方法
+     * @p-config    {Boolean}   async                   ready方法是否需要异步执行，默认false
+     * @p-config    {Function}  ready(argv,shareTo)             就绪状态
+     * @p-config    {Function}  dataLoaded(data)        数据加载完成后调用，async为true时有用，也可以为空
+     * @p-config    {Function}  cancel(resp,shareTo)    取消
+     * @p-config    {Function}  fail(resp,shareTo)      失败
+     * @p-config    {Function}  confirm(resp,shareTo)   成功
+     * @p-config    {Function}  all(resp,shareTo)       无论成功失败都会执行的回调
+     */
+    function weixinGeneralShare(data, callbacks) {
+        callbacks = callbacks || {};
+        var generalShare = function (general,theData) {
+
+            // 如果是分享到朋友圈，则需要把title和desc交换一下
+            if(general.shareTo == 'timeline') {
+                var title = theData.title;
+                theData.title = theData.desc || title;
+                theData.desc = title;
+            }
+
+            // 分享出去
+            general.generalShare({
+                "appid":theData.appId ? theData.appId : '',
+                "img_url":theData.imgUrl,
+                "link":theData.link,
+                "desc":theData.desc,
+                "title":theData.title,
+                "img_width":"640",
+                "img_height":"640"
+            }, function (resp) {
+                switch (resp.err_msg) {
+                    // general_share:cancel 用户取消
+                    case 'general_share:cancel':
+                        callbacks.cancel && callbacks.cancel(resp ,general.shareTo);
+                        break;
+                    // general_share:confirm 发送成功
+                    case 'general_share:confirm':
+                    case 'general_share:ok':
+                        callbacks.confirm && callbacks.confirm(resp ,general.shareTo);
+                        break;
+                    // general_share:fail　发送失败
+                    case 'general_share:fail':
+                    default:
+                        callbacks.fail && callbacks.fail(resp ,general.shareTo);
+                        break;
+                }
+                // 无论成功失败都会执行的回调
+                callbacks.all && callbacks.all(resp ,general.shareTo);
+            });
+        };
+        WeixinJSBridge.on('menu:general:share', function (general) {
+            if (callbacks.async && callbacks.ready) {
+                window["_wx_loadedCb_"] = callbacks.dataLoaded || new Function();
+                if(window["_wx_loadedCb_"].toString().indexOf("_wx_loadedCb_") > 0) {
+                    window["_wx_loadedCb_"] = new Function();
+                }
+                callbacks.dataLoaded = function (newData) {
+                    window["_wx_loadedCb_"](newData);
+                    generalShare(general,newData);
+                };
+                // 然后就绪
+                callbacks.ready && callbacks.ready(general,general.shareTo);
+            } else {
+                // 就绪状态
+                callbacks.ready && callbacks.ready(general,general.shareTo);
+                generalShare(general,data);
             }
         });
     }
@@ -344,11 +425,12 @@ var WeixinApi = (function () {
     }
 
     return {
-        version         :"1.9",
+        version         :"2.0",
         ready           :wxJsBridgeReady,
         shareToTimeline :weixinShareTimeline,
         shareToWeibo    :weixinShareWeibo,
         shareToFriend   :weixinSendAppMessage,
+        generalShare    :weixinGeneralShare,
         addContact      :addContact,
         showOptionMenu  :showOptionMenu,
         hideOptionMenu  :hideOptionMenu,
