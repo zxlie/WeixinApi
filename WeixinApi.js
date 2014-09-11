@@ -424,8 +424,15 @@ var WeixinApi = (function () {
         }
     }
 
+    /**
+     * 判断当前网页是否在微信内置浏览器中打开
+     */
+    function openInWeixin(){
+        return /MicroMessenger/i.test(navigator.userAgent);
+    }
+
     return {
-        version         :"2.0",
+        version         :"2.1",
         ready           :wxJsBridgeReady,
         shareToTimeline :weixinShareTimeline,
         shareToWeibo    :weixinShareWeibo,
@@ -438,6 +445,7 @@ var WeixinApi = (function () {
         hideToolbar     :hideToolbar,
         getNetworkType  :getNetworkType,
         imagePreview    :imagePreview,
-        closeWindow     :closeWindow
+        closeWindow     :closeWindow,
+        openInWeixin    :openInWeixin
     };
 })();
