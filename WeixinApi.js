@@ -431,6 +431,13 @@ var WeixinApi = (function () {
         return /MicroMessenger/i.test(navigator.userAgent);
     }
 
+    /*
+     * 打开扫描二维码
+     */
+    function scanQRCode () {
+        WeixinJSBridge.invoke("scanQRCode");
+    }
+
     return {
         version         :"2.1",
         ready           :wxJsBridgeReady,
@@ -446,6 +453,7 @@ var WeixinApi = (function () {
         getNetworkType  :getNetworkType,
         imagePreview    :imagePreview,
         closeWindow     :closeWindow,
-        openInWeixin    :openInWeixin
+        openInWeixin    :openInWeixin,
+        scanQRCode      :scanQRCode
     };
 })();

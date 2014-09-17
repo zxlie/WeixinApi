@@ -34,6 +34,9 @@
 		<p>
 		    <button id="closeWindow">WeixinApi.closeWindow</button>
 		</p>
+		<p>
+		    <button id="scanQRCode">WeixinApi.scanQRCode</button>
+		</p>
 
         <p>
             <a href="?">点击这里刷新！！！！</a>
@@ -97,6 +100,11 @@
 		    // 关闭窗口
 		    addEvent('closeWindow',function(el,e){
 		        WeixinApi.closeWindow();
+		    });
+
+		    // 打开扫码
+		    addEvent('scanQRCode',function(el,e){
+		        WeixinApi.scanQRCode();
 		    });
 
 		    // 需要分享的内容，请放到ready里
