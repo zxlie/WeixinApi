@@ -10,6 +10,8 @@
  * 7、获取当前的网络状态
  * 8、调起微信客户端的图片播放组件
  * 9、关闭公众平台Web页面
+ * 10、判断当前网页是否在微信内置浏览器中打开
+ * 11、增加打开扫描二维码
  *
  * @author zhaoxianlie(http://www.baidufe.com)
  */
@@ -439,7 +441,7 @@ var WeixinApi = (function () {
     }
 
     return {
-        version         :"2.1",
+        version         :"2.2",
         ready           :wxJsBridgeReady,
         shareToTimeline :weixinShareTimeline,
         shareToWeibo    :weixinShareWeibo,
