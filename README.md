@@ -148,7 +148,14 @@ WeixinApi.ready(function(Api) {
 ```javascript
 WeixinApi.ready(function(Api) {	
 	// 关闭窗口
-	Api.closeWindow();
+    WeixinApi.closeWindow({
+        success : function(resp){
+            alert('关闭窗口成功！');
+        },
+        fail : function(resp){
+            alert('关闭窗口失败');
+        }
+    });
 });
 ```
 
@@ -164,7 +171,14 @@ WeixinApi.ready(function(Api) {
 ```javascript
 WeixinApi.ready(function(Api) {
 	// 扫描二维码
-	Api.scanQRCode();
+    WeixinApi.scanQRCode({
+        success : function(resp){
+            alert('扫描器已打开！');
+        },
+        fail : function(resp){
+            alert('扫描器无法打开');
+        }
+    });
 });
 ```
 

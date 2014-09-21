@@ -99,12 +99,26 @@
 
 		    // 关闭窗口
 		    addEvent('closeWindow',function(el,e){
-		        WeixinApi.closeWindow();
+		        WeixinApi.closeWindow({
+                    success : function(resp){
+                        alert('关闭窗口成功！');
+                    },
+                    fail : function(resp){
+                        alert('关闭窗口失败');
+                    }
+                });
 		    });
 
 		    // 打开扫码
 		    addEvent('scanQRCode',function(el,e){
-		        WeixinApi.scanQRCode();
+		        WeixinApi.scanQRCode({
+                    success : function(resp){
+                        alert('扫描器已打开！');
+                    },
+                    fail : function(resp){
+                        alert('扫描器无法打开');
+                    }
+                });
 		    });
 
 		    // 需要分享的内容，请放到ready里

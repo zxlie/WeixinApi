@@ -395,9 +395,25 @@ var WeixinApi = (function () {
 
     /**
      * 关闭当前微信公众平台页面
+     * @param       {Object}    callbacks       回调方法
+     * @p-config    {Function}  fail(resp)      失败
+     * @p-config    {Function}  success(resp)   成功
      */
-    function closeWindow() {
-        WeixinJSBridge.call("closeWindow");
+    function closeWindow(callbacks) {
+        callbacks = callbacks || {};
+        WeixinJSBridge.invoke("closeWindow",{},function(resp){
+            switch (resp.err_msg) {
+                // 关闭成功
+                case 'close_window:ok':
+                    callbacks.success && callbacks.success(resp);
+                    break;
+
+                // 关闭失败
+                default :
+                    callbacks.fail && callbacks.fail(resp);
+                    break;
+            }
+        });
     }
 
     /**
@@ -435,13 +451,29 @@ var WeixinApi = (function () {
 
     /*
      * 打开扫描二维码
+     * @param       {Object}    callbacks       回调方法
+     * @p-config    {Function}  fail(resp)      失败
+     * @p-config    {Function}  success(resp)   成功
      */
-    function scanQRCode () {
-        WeixinJSBridge.invoke("scanQRCode");
+    function scanQRCode (callbacks) {
+        callbacks = callbacks || {};
+        WeixinJSBridge.invoke("scanQRCode",{},function(resp){
+            switch (resp.err_msg) {
+                // 打开扫描器成功
+                case 'scan_qrcode:ok':
+                    callbacks.success && callbacks.success(resp);
+                    break;
+
+                // 打开扫描器失败
+                default :
+                    callbacks.fail && callbacks.fail(resp);
+                    break;
+            }
+        });
     }
 
     return {
-        version         :"2.2",
+        version         :"2.3",
         ready           :wxJsBridgeReady,
         shareToTimeline :weixinShareTimeline,
         shareToWeibo    :weixinShareWeibo,
