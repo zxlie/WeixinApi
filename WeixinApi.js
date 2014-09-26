@@ -12,6 +12,7 @@
  * 9、关闭公众平台Web页面
  * 10、判断当前网页是否在微信内置浏览器中打开
  * 11、增加打开扫描二维码
+ * 12、支持WeixinApi的错误监控
  *
  * @author zhaoxianlie(http://www.baidufe.com)
  */
@@ -472,8 +473,42 @@ var WeixinApi = (function () {
         });
     }
 
+    /**
+     * 开启Api的debug模式，比如出了个什么错误，能alert告诉你，而不是一直很苦逼的在想哪儿出问题了
+     * @param    {Function}  callback(error) 出错后的回调，默认是alert
+     */
+    function enableDebugMode(callback){
+        /**
+         * @param {String}  errorMessage   错误信息
+         * @param {String}  scriptURI      出错的文件
+         * @param {Long}    lineNumber     出错代码的行号
+         * @param {Long}    columnNumber   出错代码的列号
+         */
+        window.onerror = function(errorMessage, scriptURI, lineNumber,columnNumber) {
+
+            // 有callback的情况下，将错误信息传递到options.callback中
+            if(typeof callback === 'function'){
+                callback({
+                    message : errorMessage,
+                    script : scriptURI,
+                    line : lineNumber,
+                    column : columnNumber
+                });
+            }else{
+                // 其他情况，都以alert方式直接提示错误信息
+                var msgs = [];
+                msgs.push("额，代码有错。。。");
+                msgs.push("\n错误信息：" , errorMessage);
+                msgs.push("\n出错文件：" , scriptURI);
+                msgs.push("\n出错位置：" , lineNumber + '行，' + columnNumber + '列');
+                alert(msgs.join(''));
+            }
+        }
+    }
+
     return {
-        version         :"2.3",
+        version         :"2.4",
+        enableDebugMode :enableDebugMode,
         ready           :wxJsBridgeReady,
         shareToTimeline :weixinShareTimeline,
         shareToWeibo    :weixinShareWeibo,

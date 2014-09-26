@@ -13,6 +13,7 @@
 	9、关闭公众平台Web页面
     10、判断当前网页是否在微信内置浏览器中打开
     11、增加打开扫描二维码
+    12、支持WeixinApi的错误监控
 
 你可以用微信的“扫一扫”来打开下面这个二维码体验一把：
 
@@ -21,8 +22,12 @@
 ### 2、如何使用？
 使用起来比较简单，具体可参考demo.html中的实现
 
-#### 1）、分享
+#### 1）、初始化等待分享
 ```javascript
+// 开发阶段，开启WeixinApi的调试模式
+WeixinApi.enableDebugMode();
+
+// 初始化WeixinApi，等待分享
 WeixinApi.ready(function(Api) {
 
     // 微信分享的数据
@@ -180,6 +185,26 @@ WeixinApi.ready(function(Api) {
         }
     });
 });
+```
+
+#### 9）、开启WeixinApi的错误监控
+注意，这句代码务必放在WeixinApi.ready之前；上线的时候，根据实际需要，可删掉它
+
+```javascript
+// 方法1：不带任何参数，将以alert方式提示出错信息
+WeixinApi.enableDebugMode();
+
+// 方法2：给一个callback，自己处理错误信息
+WeixinApi.enableDebugMode(function(errObj){
+    // errObj = {
+    //     message : errorMessage,
+    //     script : scriptURI,
+    //     line : lineNumber,
+    //     column : columnNumber
+    // }
+});
+
+// 当然，你还可以做一件事：把这些错误信息上报到服务器
 ```
 
 ### 3、其他
