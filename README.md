@@ -82,6 +82,9 @@ WeixinApi.ready(function(Api) {
 });
 ```
 
+可能有的朋友不知道appId从哪儿获取，请看这里：[如何获取appId](http://jingyan.baidu.com/article/6525d4b12af618ac7c2e9468.html)
+
+
 #### 2）、隐藏右上角option menu入口
 ```javascript
 WeixinApi.ready(function(Api) {
