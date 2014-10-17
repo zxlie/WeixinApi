@@ -13,6 +13,7 @@
  * 10、判断当前网页是否在微信内置浏览器中打开
  * 11、增加打开扫描二维码
  * 12、支持WeixinApi的错误监控
+ * 13、检测应用程序是否已经安装（需要官方开通权限）
  *
  * @author zhaoxianlie(http://www.baidufe.com)
  */
@@ -478,14 +479,14 @@ var WeixinApi = (function () {
      * 检测应用程序是否已安装 
      * 		by mingcheng 2014-10-17
      *
-     * @param       {Object}    data       	应用程序的信息
-     * @p-config    {String}    packageUrl  应用注册的自定义前缀，如 xxx:// 就取 xxx
-     * @p-config    {String}    packageName	应用的包名
+     * @param       {Object}    data       	    应用程序的信息
+     * @p-config    {String}    packageUrl      应用注册的自定义前缀，如 xxx:// 就取 xxx
+     * @p-config    {String}    packageName	    应用的包名
      *
-     * @param       {Object}    callbacks  相关回调方法
+     * @param       {Object}    callbacks       相关回调方法
      * @p-config    {Function}  fail(resp)      失败
      * @p-config    {Function}  success(resp)   成功，如果有对应的版本信息，则写入到 resp.version 中
-     * @p-config    {Function}  all(resp,shareTo)       无论成功失败都会执行的回调
+     * @p-config    {Function}  all(resp)       无论成功失败都会执行的回调
      */
     function getInstallState(data, callbacks) {
         callbacks = callbacks || {};
@@ -541,7 +542,7 @@ var WeixinApi = (function () {
     }
 
     return {
-        version         :"2.4",
+        version         :"2.5",
         enableDebugMode :enableDebugMode,
         ready           :wxJsBridgeReady,
         shareToTimeline :weixinShareTimeline,
