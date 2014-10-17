@@ -37,6 +37,10 @@
 		<p>
 		    <button id="scanQRCode">WeixinApi.scanQRCode</button>
 		</p>
+		
+		<p>
+		    <button id="getInstallState">WeixinApi.getInstallState</button>
+		</p>
 
         <p>
             <a href="?">点击这里刷新！！！！</a>
@@ -120,6 +124,22 @@
                     }
                 });
 		    });
+		    
+		    // 判断是否安装对应的应用（需要官方打开权限）
+		    addEvent("getInstallState", function(el, e) {
+                WeixinApi.getInstallState({
+                    packageName: "cn.dxy.android.aspirin",
+                    packageUrl: "dxy-aspirin"
+                }, {
+                    success: function(resp) {
+                        alert("App is installed, version " + resp.version);
+                    },
+                    fail: function(resp) {
+                        alert("Oops, something goes wrong or app is not installed.");
+                    }
+                })
+            });
+
 
             // 开启Api的debug模式
             WeixinApi.enableDebugMode();

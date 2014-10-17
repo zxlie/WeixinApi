@@ -473,6 +473,40 @@ var WeixinApi = (function () {
         });
     }
 
+
+	/**
+     * 检测应用程序是否已安装 
+     * 		by mingcheng 2014-10-17
+     *
+     * @param       {Object}    data       	应用程序的信息
+     * @p-config    {String}    packageUrl  应用注册的自定义前缀，如 xxx:// 就取 xxx
+     * @p-config    {String}    packageName	应用的包名
+     *
+     * @param       {Object}    callbacks  相关回调方法
+     * @p-config    {Function}  fail(resp)      失败
+     * @p-config    {Function}  success(resp)   成功，如果有对应的版本信息，则写入到 resp.version 中
+     * @p-config    {Function}  all(resp,shareTo)       无论成功失败都会执行的回调
+     */
+    function getInstallState(data, callbacks) {
+        callbacks = callbacks || {};
+
+        WeixinJSBridge.invoke("getInstallState", { 
+            "packageUrl": data.packageUrl || "",
+            "packageName": data.packageName || ""
+        }, function(resp) {
+            var msg = resp.err_msg, match = msg.match(/state:yes_?(.*)$/);
+            if (match) {
+                resp.version = match[1] || "";
+                callbacks.success && callbacks.success(resp);
+            } else {
+                callbacks.fail && callbacks.fail(resp);
+            }
+
+            callbacks.all && callbacks.all(resp);
+        });
+    }
+
+
     /**
      * 开启Api的debug模式，比如出了个什么错误，能alert告诉你，而不是一直很苦逼的在想哪儿出问题了
      * @param    {Function}  callback(error) 出错后的回调，默认是alert
@@ -523,6 +557,7 @@ var WeixinApi = (function () {
         imagePreview    :imagePreview,
         closeWindow     :closeWindow,
         openInWeixin    :openInWeixin,
+        getInstallState :getInstallState,
         scanQRCode      :scanQRCode
     };
 })();
