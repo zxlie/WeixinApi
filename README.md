@@ -161,10 +161,10 @@ WeixinApi.ready(function(Api) {
 
 #### 7）、判断当前网页是否在微信内置浏览器中打开
 ```javascript
-WeixinApi.ready(function(Api) {
+
 	// true or false
-	var flag = Api.openInWeixin();
-});
+	var flag = WeixinApi.openInWeixin();
+
 ```
 
 #### 8）、打开扫描二维码
