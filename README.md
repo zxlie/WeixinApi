@@ -218,3 +218,6 @@ WeixinApi.enableDebugMode(function(errObj){
 
 ### 4、招聘广告
 鄙人目前在美丽说商业产品前端团队，队里缺靠谱的FE，欢迎推荐或自荐：http://www.baidufe.com/item/25ea3376a893619eea8c.html
+
+### 5、来瓶可乐
+![alien-alipay-qrcode-256.png](http://www.baidufe.com/upload/images/2014-11-03_21-19-40_5.png)
