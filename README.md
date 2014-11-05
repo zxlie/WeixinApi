@@ -5,7 +5,7 @@
 * [API能实现什么](#user-content-api能实现什么)
 * [如何使用？](#user-content-如何使用)
     * [1、初始化等待分享](#user-content-1初始化等待分享)
-    * [2、隐藏右上角optionMenu入口](#user-content-2隐藏右上角optionmenu入口)
+    * [2、隐藏右上角option menu入口](#user-content-2隐藏右上角option-menu入口)
     * [3、隐藏底部工具栏](#user-content-3隐藏底部工具栏)
     * [4、获取当前的网络类型](#user-content-4获取当前的网络类型)
     * [5、调起客户端图片播放组件](#user-content-5调起客户端图片播放组件)
