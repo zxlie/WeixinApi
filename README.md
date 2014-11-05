@@ -1,7 +1,22 @@
 微信公众平台Js API（WeixinApi）
 =======================================
 
-### 1、API能实现什么？
+## 目录
+* [API能实现什么](#user-content-api能实现什么)
+* [如何使用？](#user-content-如何使用)
+    * [1、初始化等待分享](#user-content-1初始化等待分享)
+    * [2、隐藏右上角optionMenu入口](#user-content-2隐藏右上角optionmenu入口)
+    * [3、隐藏底部工具栏](#user-content-3隐藏底部工具栏)
+    * [4、获取当前的网络类型](#user-content-4获取当前的网络类型)
+    * [5、调起客户端图片播放组件](#user-content-5调起客户端图片播放组件)
+    * [6、关掉当前微信公众页面窗口](#user-content-6关掉当前微信公众页面窗口)
+    * [7、判断当前网页是否在微信内置浏览器中打开](#user-content-7判断当前网页是否在微信内置浏览器中打开)
+    * [8、打开扫描二维码](#user-content-8打开扫描二维码)
+    * [9、开启WeixinApi的错误监控](#user-content-9开启weixinapi的错误监控)
+* [常见问题](#user-content-常见问题)
+* [其他](#user-content-其他)
+
+## API能实现什么
 	1、分享到微信朋友圈
 	2、分享给微信好友
 	3、分享到腾讯微博
@@ -20,10 +35,10 @@
 
 ![Weixin Api Demo](http://www.baidufe.com/upload/images/2014-06-14_3.47.02.png)
 
-### 2、如何使用？
+## 如何使用
 使用起来比较简单，具体可参考demo.html中的实现
 
-#### 1）、初始化等待分享
+### 1、初始化等待分享
 ```javascript
 // 开发阶段，开启WeixinApi的调试模式
 WeixinApi.enableDebugMode();
@@ -86,7 +101,7 @@ WeixinApi.ready(function(Api) {
 可能有的朋友不知道appId从哪儿获取，请看这里：[如何获取appId](http://jingyan.baidu.com/article/6525d4b12af618ac7c2e9468.html)
 
 
-#### 2）、隐藏右上角option menu入口
+### 2、隐藏右上角option menu入口
 ```javascript
 WeixinApi.ready(function(Api) {
 	// 隐藏
@@ -97,7 +112,7 @@ WeixinApi.ready(function(Api) {
 });
 ```
 
-#### 3）、隐藏底部工具栏
+### 3、隐藏底部工具栏
 ```javascript
 WeixinApi.ready(function(Api) {
 	// 隐藏
@@ -108,7 +123,7 @@ WeixinApi.ready(function(Api) {
 });
 ```
 
-#### 4）、获取当前的网络类型
+### 4、获取当前的网络类型
 ```javascript
 WeixinApi.ready(function(Api) {
 	Api.getNetworkType(function(network){
@@ -124,7 +139,7 @@ WeixinApi.ready(function(Api) {
 });
 ```
 
-#### 5）、调起客户端图片播放组件
+### 5、调起客户端图片播放组件
 ```javascript
 WeixinApi.ready(function(Api) {
 	// 需要播放的图片src list
@@ -153,7 +168,7 @@ WeixinApi.ready(function(Api) {
 </a>
 ```
 
-#### 6）、关掉当前微信公众页面窗口
+### 6、关掉当前微信公众页面窗口
 ```javascript
 WeixinApi.ready(function(Api) {	
 	// 关闭窗口
@@ -168,7 +183,7 @@ WeixinApi.ready(function(Api) {
 });
 ```
 
-#### 7）、判断当前网页是否在微信内置浏览器中打开
+### 7、判断当前网页是否在微信内置浏览器中打开
 ```javascript
 
 	// true or false
@@ -176,7 +191,7 @@ WeixinApi.ready(function(Api) {
 
 ```
 
-#### 8）、打开扫描二维码
+### 8、打开扫描二维码
 ```javascript
 WeixinApi.ready(function(Api) {
 	// 扫描二维码
@@ -191,7 +206,7 @@ WeixinApi.ready(function(Api) {
 });
 ```
 
-#### 9）、开启WeixinApi的错误监控
+### 9、开启WeixinApi的错误监控
 注意，这句代码务必放在WeixinApi.ready之前；上线的时候，根据实际需要，可删掉它
 
 ```javascript
@@ -211,13 +226,31 @@ WeixinApi.enableDebugMode(function(errObj){
 // 当然，你还可以做一件事：把这些错误信息上报到服务器
 ```
 
-### 3、其他
-详细的使用场景，可以到这里获取：http://www.baidufe.com/item/f07a3be0b23b4c9606bb.html
+## 常见问题
+### 1、用了这个API怎么没生效
+如果遇到这种情况，请先回到这里，扫描最上面的 [二维码](#user-content-api能实现什么) Demo，首先验证Demo是否能运行正确；然后再参照demo.html调整自己的代码：
+
+* 1）、`WeixinApi.js`路径是否引用正确
+* 2）、`WeixinApi.ready`是否正确执行了？（可以在里面加一个alert，简单粗暴可依赖）
+* 3）、开启`WeixinApi.enableDebugMode`方便问题定位
+
+### 2、Android上取消分享依然提示成功
+传送门：[为什么分享到朋友圈，取消了依然提示成功？](http://www.baidufe.com/item/4bdcde11a024c63df3af.html)
+
+### 3、想自己做一个按钮直接分享
+就我目前了解到的情况来看，是行不通的，官方都有做权限控制，感兴趣可以到这里[去翻一下评论](http://www.baidufe.com/item/f07a3be0b23b4c9606bb.html#content)
+
+### 4、我怎样动态修改分享的信息：wxData
+用到Api提供的`async:true`配置，具体可阅读[这里的使用介绍](http://www.baidufe.com/item/f07a3be0b23b4c9606bb.html)
+
+## 其他
+### 1、更多互动
+详细的使用场景，还可以到这里获取：http://www.baidufe.com/item/f07a3be0b23b4c9606bb.html
 
 注意：这只是发烧版本，非微信官方出品！有问题可大家一起来讨论，我很乐意与大家一起来完善这个API。
 
-### 4、招聘广告
+### 2、招聘广告
 鄙人目前在美丽说商业产品前端团队，队里缺靠谱的FE，欢迎推荐或自荐：http://www.baidufe.com/item/25ea3376a893619eea8c.html
 
-### 5、来瓶可乐
+### 3、如果你觉得这个Api对你有用：
 ![alien-alipay-qrcode-256.png](http://www.baidufe.com/upload/images/2014-11-03_21-19-40_5.png)
