@@ -40,6 +40,10 @@
         </p>
 
         <p>
+            <button id="sendEmail">WeixinApi.sendEmail</button>
+        </p>
+
+        <p>
             <a href="?" id="refresh">点击这里刷新！！！！</a>
         </p>
 
@@ -126,6 +130,14 @@
                         alert("Oops, something goes wrong or app is not installed.");
                     }
                 })
+            });
+
+            // 发送邮件
+            addEvent("sendEmail", function(el, e) {
+                WeixinApi.sendEmail({
+                    subject : 'Hello world！',
+                    body : '这是一封测试邮件，Demo而已，慢慢玩儿吧！'
+                });
             });
 
             // 刷新

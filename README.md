@@ -13,6 +13,7 @@
     * [7、判断当前网页是否在微信内置浏览器中打开](#user-content-7判断当前网页是否在微信内置浏览器中打开)
     * [8、打开扫描二维码](#user-content-8打开扫描二维码)
     * [9、开启WeixinApi的错误监控](#user-content-9开启weixinapi的错误监控)
+    * [10、发送电子邮件](#user-content-10发送电子邮件)
 * [常见问题](#user-content-常见问题)
 * [其他](#user-content-其他)
 
@@ -30,6 +31,8 @@
     11、增加打开扫描二维码
     12、支持WeixinApi的错误监控
     13、检测应用程序是否已经安装（需要官方开通权限）
+    14、打开微信内置地图（认证号可测试）
+    15、发送电子邮件
 
 你可以用微信的“扫一扫”来打开下面这个二维码体验一把：
 
@@ -224,6 +227,16 @@ WeixinApi.enableDebugMode(function(errObj){
 });
 
 // 当然，你还可以做一件事：把这些错误信息上报到服务器
+```
+
+### 10、发送电子邮件
+```javascript
+WeixinApi.sendEmail({
+    subject : '邮件标题',
+    body : '邮件正文'
+},function(resp){
+    // 注意这里可不要轻易alert，会卡死的。。。
+});
 ```
 
 ## 常见问题
