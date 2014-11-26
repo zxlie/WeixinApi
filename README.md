@@ -60,6 +60,9 @@ WeixinApi.ready(function(Api) {
 
     // 分享的回调
     var wxCallbacks = {
+        // 收藏操作不执行回调，默认是开启(true)的
+        favorite : false,
+
         // 分享操作开始之前
         ready : function() {
             // 你可以在这里对分享的数据进行重组
@@ -253,8 +256,11 @@ WeixinApi.sendEmail({
 ### 3、想自己做一个按钮直接分享
 就我目前了解到的情况来看，是行不通的，官方都有做权限控制，感兴趣可以到这里[去翻一下评论](http://www.baidufe.com/item/f07a3be0b23b4c9606bb.html#content)
 
-### 4、我怎样动态修改分享的信息：wxData
+### 4、怎样动态修改分享的信息：wxData
 用到Api提供的`async:true`配置，具体可阅读[这里的使用介绍](http://www.baidufe.com/item/f07a3be0b23b4c9606bb.html)
+
+### 5、收藏的时候为什么也执行分享的回调了？
+请在wxCallbacks中设置`favorite:false`，关闭收藏操作的callback
 
 ## 其他
 ### 1、更多互动

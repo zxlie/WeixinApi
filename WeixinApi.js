@@ -27,7 +27,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version:2.7
+        version:2.8
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -85,7 +85,14 @@
                     var title = theData.title;
                     theData.title = theData.desc || title;
                     theData.desc = title;
+                } else if (argv.shareTo == 'favorite') {
+                    // 如果是收藏操作，并且在wxCallbacks中配置了favorite为false，则不执行回调
+                    if (callbacks.favorite === false) {
+                        return argv.generalShare(theData, function () {
+                        });
+                    }
                 }
+
                 argv.generalShare(theData, progress);
             } else {
                 WeixinJSBridge.invoke(cmd.action, theData, progress);
@@ -105,10 +112,14 @@
                     handler(newData, argv);
                 };
                 // 然后就绪
-                callbacks.ready && callbacks.ready(argv);
+                if (!(argv && argv.shareTo == 'favorite' && callbacks.favorite === false)) {
+                    callbacks.ready && callbacks.ready(argv);
+                }
             } else {
                 // 就绪状态
-                callbacks.ready && callbacks.ready(argv);
+                if (!(argv && argv.shareTo == 'favorite' && callbacks.favorite === false)) {
+                    callbacks.ready && callbacks.ready(argv);
+                }
                 handler(data, argv);
             }
         });

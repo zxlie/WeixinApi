@@ -160,6 +160,9 @@
 
                 // 分享的回调
                 var wxCallbacks = {
+                    // 收藏操作是否触发回调，默认是开启的
+                    favorite : false,
+
                     // 分享操作开始之前
                     ready : function() {
                         // 你可以在这里对分享的数据进行重组
