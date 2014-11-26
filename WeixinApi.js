@@ -27,7 +27,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version:2.6
+        version:2.7
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -227,7 +227,15 @@
     WeixinApi.generalShare = function (data, callbacks) {
         _share({
             menu:'menu:general:share'
-        }, data, callbacks);
+        }, {
+            "appid":data.appId ? data.appId : '',
+            "img_url":data.imgUrl,
+            "link":data.link,
+            "desc":data.title,
+            "title":data.desc,
+            "img_width":"640",
+            "img_height":"640"
+        }, callbacks);
     };
 
     /**
