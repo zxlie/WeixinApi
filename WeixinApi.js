@@ -27,7 +27,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version:2.8
+        version:2.9
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -80,13 +80,8 @@
         var handler = function (theData, argv) {
             // 新的分享接口，单独处理
             if (cmd.menu === 'menu:general:share') {
-                // 如果是分享到朋友圈，则需要把title和desc交换一下
-                if (argv.shareTo == 'timeline') {
-                    var title = theData.title;
-                    theData.title = theData.desc || title;
-                    theData.desc = title;
-                } else if (argv.shareTo == 'favorite') {
-                    // 如果是收藏操作，并且在wxCallbacks中配置了favorite为false，则不执行回调
+                // 如果是收藏操作，并且在wxCallbacks中配置了favorite为false，则不执行回调
+                if (argv.shareTo == 'favorite') {
                     if (callbacks.favorite === false) {
                         return argv.generalShare(theData, function () {
                         });
