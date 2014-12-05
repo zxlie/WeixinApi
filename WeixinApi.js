@@ -81,7 +81,7 @@
             // 新的分享接口，单独处理
             if (cmd.menu === 'menu:general:share') {
                 // 如果是收藏操作，并且在wxCallbacks中配置了favorite为false，则不执行回调
-                if (argv.shareTo == 'favorite') {
+                if (argv.shareTo == 'favorite' || argv.scene == 'favorite') {
                     if (callbacks.favorite === false) {
                         return argv.generalShare(theData, function () {
                         });
@@ -120,13 +120,13 @@
                     handler(theData, argv);
                 };
                 // 然后就绪
-                if (!(argv && argv.shareTo == 'favorite' && callbacks.favorite === false)) {
-                    callbacks.ready && callbacks.ready(argv);
+                if (!(argv && (argv.shareTo == 'favorite' || argv.scene == 'favorite') && callbacks.favorite === false)) {
+                    callbacks.ready && callbacks.ready(argv, data);
                 }
             } else {
                 // 就绪状态
-                if (!(argv && argv.shareTo == 'favorite' && callbacks.favorite === false)) {
-                    callbacks.ready && callbacks.ready(argv);
+                if (!(argv && (argv.shareTo == 'favorite' || argv.scene == 'favorite') && callbacks.favorite === false)) {
+                    callbacks.ready && callbacks.ready(argv, data);
                 }
                 handler(data, argv);
             }
@@ -144,7 +144,7 @@
      *
      * @param       {Object}    callbacks  相关回调方法
      * @p-config    {Boolean}   async                   ready方法是否需要异步执行，默认false
-     * @p-config    {Function}  ready(argv)             就绪状态
+     * @p-config    {Function}  ready(argv, data)       就绪状态
      * @p-config    {Function}  dataLoaded(data)        数据加载完成后调用，async为true时有用，也可以为空
      * @p-config    {Function}  cancel(resp)    取消
      * @p-config    {Function}  fail(resp)      失败
@@ -177,7 +177,7 @@
      *
      * @param       {Object}    callbacks  相关回调方法
      * @p-config    {Boolean}   async                   ready方法是否需要异步执行，默认false
-     * @p-config    {Function}  ready(argv)             就绪状态
+     * @p-config    {Function}  ready(argv, data)       就绪状态
      * @p-config    {Function}  dataLoaded(data)        数据加载完成后调用，async为true时有用，也可以为空
      * @p-config    {Function}  cancel(resp)    取消
      * @p-config    {Function}  fail(resp)      失败
@@ -208,7 +208,7 @@
      *
      * @param       {Object}    callbacks  相关回调方法
      * @p-config    {Boolean}   async                   ready方法是否需要异步执行，默认false
-     * @p-config    {Function}  ready(argv)             就绪状态
+     * @p-config    {Function}  ready(argv, data)       就绪状态
      * @p-config    {Function}  dataLoaded(data)        数据加载完成后调用，async为true时有用，也可以为空
      * @p-config    {Function}  cancel(resp)    取消
      * @p-config    {Function}  fail(resp)      失败
@@ -236,12 +236,12 @@
      *
      * @param       {Object}    callbacks  相关回调方法
      * @p-config    {Boolean}   async                   ready方法是否需要异步执行，默认false
-     * @p-config    {Function}  ready(argv,shareTo)     就绪状态
+     * @p-config    {Function}  ready(argv, data)       就绪状态
      * @p-config    {Function}  dataLoaded(data)        数据加载完成后调用，async为true时有用，也可以为空
-     * @p-config    {Function}  cancel(resp,shareTo)    取消
-     * @p-config    {Function}  fail(resp,shareTo)      失败
-     * @p-config    {Function}  confirm(resp,shareTo)   成功
-     * @p-config    {Function}  all(resp,shareTo)       无论成功失败都会执行的回调
+     * @p-config    {Function}  cancel(resp)    取消
+     * @p-config    {Function}  fail(resp)      失败
+     * @p-config    {Function}  confirm(resp)   成功
+     * @p-config    {Function}  all(resp)       无论成功失败都会执行的回调
      */
     WeixinApi.generalShare = function (data, callbacks) {
         _share({
