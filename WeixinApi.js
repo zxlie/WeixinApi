@@ -27,7 +27,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version:2.9
+        version:3.0
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -97,14 +97,27 @@
         // 监听分享操作
         WeixinJSBridge.on(cmd.menu, function (argv) {
             if (callbacks.async && callbacks.ready) {
-                var _callbackKey = "_wx_loadedCb_";
-                WeixinApi[_callbackKey] = callbacks.dataLoaded || new Function();
-                if (WeixinApi[_callbackKey].toString().indexOf(_callbackKey) > 0) {
-                    WeixinApi[_callbackKey] = new Function();
+                WeixinApi["_wx_loadedCb_"] = callbacks.dataLoaded || new Function();
+                if (WeixinApi["_wx_loadedCb_"].toString().indexOf("_wx_loadedCb_") > 0) {
+                    WeixinApi["_wx_loadedCb_"] = new Function();
                 }
                 callbacks.dataLoaded = function (newData) {
-                    WeixinApi[_callbackKey](newData);
-                    handler(newData, argv);
+                    // 这种情况下，数据仍需加工
+                    var theData = newData;
+                    if (cmd.menu == 'menu:share:timeline' ||
+                        (cmd.menu == 'menu:general:share' && argv.shareTo == 'timeline')) {
+                        theData = {
+                            "appid":newData.appId ? newData.appId : '',
+                            "img_url":newData.img_url || newData.imgUrl,
+                            "link":newData.link,
+                            "desc":newData.title,
+                            "title":newData.desc,
+                            "img_width":"640",
+                            "img_height":"640"
+                        };
+                    }
+                    WeixinApi["_wx_loadedCb_"](theData);
+                    handler(theData, argv);
                 };
                 // 然后就绪
                 if (!(argv && argv.shareTo == 'favorite' && callbacks.favorite === false)) {
