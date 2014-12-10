@@ -14,7 +14,7 @@
                 padding: 5px 10px;
             }
         </style>
-        <script type="text/javascript" src="WeixinApi.js"></script>
+        <script type="text/javascript" src="WeixinApi.js?v=1"></script>
     </head>
     <body>
         <p>这是一个测试页面！请直接分享到微信好友、朋友圈、腾讯微博看效果吧！</p>
@@ -163,10 +163,17 @@
                     // 收藏操作是否触发回调，默认是开启的
                     favorite : false,
 
+                    // 用async模式，表示每次分享之前，都需要更新分享内容
+                    async:true,
+
                     // 分享操作开始之前
                     ready : function() {
                         // 你可以在这里对分享的数据进行重组
                         alert("准备分享");
+                        this.dataLoaded({
+                            title : '在这里可以单独修改其中的title字段',
+                            desc : '描述信息被改了。。。'
+                        });
                     },
                     // 分享被用户自动取消
                     cancel : function(resp) {

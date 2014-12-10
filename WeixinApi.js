@@ -27,7 +27,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version:3.1
+        version:3.2
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -47,6 +47,23 @@
             });
         }
     }
+
+    /**
+     * 对象简单继承，后面的覆盖前面的，继承深度：deep=1
+     * @private
+     */
+    var _extend = function () {
+        var result = {}, obj, k;
+        for (var i = 0, len = arguments.length; i < len; i++) {
+            obj = arguments[i];
+            if (typeof obj === 'object') {
+                for (k in obj) {
+                    result[k] = obj[k];
+                }
+            }
+        }
+        return result;
+    };
 
     /**
      * 内部私有方法，分享用
@@ -103,15 +120,15 @@
                 }
                 callbacks.dataLoaded = function (newData) {
                     // 这种情况下，数据仍需加工
-                    var theData = newData;
+                    var theData = _extend(data, newData);
                     if (cmd.menu == 'menu:share:timeline' ||
                         (cmd.menu == 'menu:general:share' && argv.shareTo == 'timeline')) {
                         theData = {
-                            "appid":newData.appId ? newData.appId : '',
-                            "img_url":newData.img_url || newData.imgUrl,
-                            "link":newData.link,
-                            "desc":newData.title,
-                            "title":newData.desc,
+                            "appid":theData.appId ? theData.appId : '',
+                            "img_url":theData.imgUrl,
+                            "link":theData.link,
+                            "desc":theData.title,
+                            "title":theData.desc,
                             "img_width":"640",
                             "img_height":"640"
                         };
@@ -250,8 +267,8 @@
             "appid":data.appId ? data.appId : '',
             "img_url":data.imgUrl,
             "link":data.link,
-            "desc":data.title,
-            "title":data.desc,
+            "desc":data.desc,
+            "title":data.title,
             "img_width":"640",
             "img_height":"640"
         }, callbacks);
