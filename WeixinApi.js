@@ -27,7 +27,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version:3.2
+        version:3.3
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -125,7 +125,7 @@
                         (cmd.menu == 'menu:general:share' && argv.shareTo == 'timeline')) {
                         theData = {
                             "appid":theData.appId ? theData.appId : '',
-                            "img_url":theData.imgUrl,
+                            "img_url":theData.img_url || theData.imgUrl,
                             "link":theData.link,
                             "desc":theData.title,
                             "title":theData.desc,
