@@ -14,8 +14,7 @@
  * 11、增加打开扫描二维码
  * 12、支持WeixinApi的错误监控
  * 13、检测应用程序是否已经安装（需要官方开通权限）
- * 14、打开微信内置地图（认证过的公众号可用）
- * 15、发送电子邮件
+ * 14、发送电子邮件
  *
  * @author zhaoxianlie(http://www.baidufe.com)
  */
@@ -27,7 +26,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version:3.3
+        version:3.4
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -474,41 +473,6 @@
                 callbacks.fail && callbacks.fail(resp);
             }
 
-            callbacks.all && callbacks.all(resp);
-        });
-    };
-
-    /**
-     * 从网页里直接调起微信地图
-     *
-     * @param       {Object}    data             打开地图所需要的数据
-     * @p-config    {String}    latitude         纬度
-     * @p-config    {String}    longitude        经度
-     * @p-config    {String}    name             POI名称
-     * @p-config    {String}    adress           地址
-     * @p-config    {String}    scale            缩放
-     * @p-config    {String}    infoUrl          查看位置界面底部的超链接
-     *
-     * @param       {Object}    callbacks       相关回调方法
-     * @p-config    {Function}  fail(resp)      失败
-     * @p-config    {Function}  success(resp)   成功
-     * @p-config    {Function}  all(resp)       无论成功失败都会执行的回调
-     */
-    WeixinApi.openLocation = function (data, callbacks) {
-        callbacks = callbacks || {};
-        WeixinJSBridge.invoke('openLocation', {
-            "latitude":data.latitude,
-            "longitude":data.longitude,
-            "name":data.name,
-            "address":data.address,
-            "scale":data.scale || 14,
-            "infoUrl":data.infoUrl || ''
-        }, function (resp) {
-            if (resp.err_msg === "open_location:ok") {
-                callbacks.success && callbacks.success(resp);
-            } else {
-                callbacks.fail && callbacks.fail(resp);
-            }
             callbacks.all && callbacks.all(resp);
         });
     };
