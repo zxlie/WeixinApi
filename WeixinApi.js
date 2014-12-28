@@ -26,7 +26,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version:3.4
+        version: 3.5
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -57,7 +57,7 @@
             obj = arguments[i];
             if (typeof obj === 'object') {
                 for (k in obj) {
-                    result[k] = obj[k];
+                    obj[k] && (result[k] = obj[k]);
                 }
             }
         }
@@ -94,6 +94,20 @@
 
         // 执行分享，并处理结果
         var handler = function (theData, argv) {
+
+            // 据用户反馈，貌似Android上的分享到朋友圈是OK的，iOS不太对
+            if (cmd.menu == 'menu:share:timeline' ||
+                (cmd.menu == 'menu:general:share' && argv.shareTo == 'timeline')) {
+
+                // 判断是否为Android
+                var isAndroid = /android/i.test(navigator.userAgent);
+                if (!isAndroid) {
+                    var title = theData.title;
+                    theData.title = theData.desc || title;
+                    theData.desc = title || theData.desc;
+                }
+            }
+
             // 新的分享接口，单独处理
             if (cmd.menu === 'menu:general:share') {
                 // 如果是收藏操作，并且在wxCallbacks中配置了favorite为false，则不执行回调
@@ -112,39 +126,36 @@
 
         // 监听分享操作
         WeixinJSBridge.on(cmd.menu, function (argv) {
+            callbacks.dataLoaded = callbacks.dataLoaded || new Function();
             if (callbacks.async && callbacks.ready) {
-                WeixinApi["_wx_loadedCb_"] = callbacks.dataLoaded || new Function();
+                WeixinApi["_wx_loadedCb_"] = callbacks.dataLoaded;
                 if (WeixinApi["_wx_loadedCb_"].toString().indexOf("_wx_loadedCb_") > 0) {
                     WeixinApi["_wx_loadedCb_"] = new Function();
                 }
                 callbacks.dataLoaded = function (newData) {
-                    // 这种情况下，数据仍需加工
+                    callbacks.__cbkCalled = true;
                     var theData = _extend(data, newData);
-                    if (cmd.menu == 'menu:share:timeline' ||
-                        (cmd.menu == 'menu:general:share' && argv.shareTo == 'timeline')) {
-                        theData = {
-                            "appid":theData.appId ? theData.appId : '',
-                            "img_url":theData.img_url || theData.imgUrl,
-                            "link":theData.link,
-                            "desc":theData.title,
-                            "title":theData.desc,
-                            "img_width":"640",
-                            "img_height":"640"
-                        };
-                    }
+                    theData.img_url = theData.imgUrl || theData.img_url;
+                    delete theData.imgUrl;
                     WeixinApi["_wx_loadedCb_"](theData);
                     handler(theData, argv);
                 };
                 // 然后就绪
                 if (!(argv && (argv.shareTo == 'favorite' || argv.scene == 'favorite') && callbacks.favorite === false)) {
                     callbacks.ready && callbacks.ready(argv, data);
+                    // 如果设置了async为true，但是在ready方法中并没有手动调用dataLoaded方法，则自动触发一次
+                    if (!callbacks.__cbkCalled) {
+                        callbacks.dataLoaded({});
+                        callbacks.__cbkCalled = false;
+                    }
                 }
             } else {
                 // 就绪状态
+                var theData = _extend(data);
                 if (!(argv && (argv.shareTo == 'favorite' || argv.scene == 'favorite') && callbacks.favorite === false)) {
-                    callbacks.ready && callbacks.ready(argv, data);
+                    callbacks.ready && callbacks.ready(argv, theData);
                 }
-                handler(data, argv);
+                handler(theData, argv);
             }
         });
     };
@@ -169,16 +180,16 @@
      */
     WeixinApi.shareToTimeline = function (data, callbacks) {
         _share({
-            menu:'menu:share:timeline',
-            action:'shareTimeline'
+            menu: 'menu:share:timeline',
+            action: 'shareTimeline'
         }, {
-            "appid":data.appId ? data.appId : '',
-            "img_url":data.imgUrl,
-            "link":data.link,
-            "desc":data.title,
-            "title":data.desc,
-            "img_width":"640",
-            "img_height":"640"
+            "appid": data.appId ? data.appId : '',
+            "img_url": data.imgUrl,
+            "link": data.link,
+            "desc": data.desc,
+            "title": data.title,
+            "img_width": "640",
+            "img_height": "640"
         }, callbacks);
     };
 
@@ -202,16 +213,16 @@
      */
     WeixinApi.shareToFriend = function (data, callbacks) {
         _share({
-            menu:'menu:share:appmessage',
-            action:'sendAppMessage'
+            menu: 'menu:share:appmessage',
+            action: 'sendAppMessage'
         }, {
-            "appid":data.appId ? data.appId : '',
-            "img_url":data.imgUrl,
-            "link":data.link,
-            "desc":data.desc,
-            "title":data.title,
-            "img_width":"640",
-            "img_height":"640"
+            "appid": data.appId ? data.appId : '',
+            "img_url": data.imgUrl,
+            "link": data.link,
+            "desc": data.desc,
+            "title": data.title,
+            "img_width": "640",
+            "img_height": "640"
         }, callbacks);
     };
 
@@ -233,11 +244,11 @@
      */
     WeixinApi.shareToWeibo = function (data, callbacks) {
         _share({
-            menu:'menu:share:weibo',
-            action:'shareWeibo'
+            menu: 'menu:share:weibo',
+            action: 'shareWeibo'
         }, {
-            "content":data.desc,
-            "url":data.link
+            "content": data.desc,
+            "url": data.link
         }, callbacks);
     };
 
@@ -261,15 +272,15 @@
      */
     WeixinApi.generalShare = function (data, callbacks) {
         _share({
-            menu:'menu:general:share'
+            menu: 'menu:general:share'
         }, {
-            "appid":data.appId ? data.appId : '',
-            "img_url":data.imgUrl,
-            "link":data.link,
-            "desc":data.desc,
-            "title":data.title,
-            "img_width":"640",
-            "img_height":"640"
+            "appid": data.appId ? data.appId : '',
+            "img_url": data.imgUrl,
+            "link": data.link,
+            "desc": data.desc,
+            "title": data.title,
+            "img_width": "640",
+            "img_height": "640"
         }, callbacks);
     };
 
@@ -283,8 +294,8 @@
     WeixinApi.addContact = function (appWeixinId, callbacks) {
         callbacks = callbacks || {};
         WeixinJSBridge.invoke("addContact", {
-            webtype:"1",
-            username:appWeixinId
+            webtype: "1",
+            username: appWeixinId
         }, function (resp) {
             var success = !resp.err_msg || "add_contact:ok" == resp.err_msg
                 || "add_contact:added" == resp.err_msg;
@@ -308,8 +319,8 @@
             return;
         }
         WeixinJSBridge.invoke('imagePreview', {
-            'current':curSrc,
-            'urls':srcList
+            'current': curSrc,
+            'urls': srcList
         });
     };
 
@@ -462,8 +473,8 @@
         callbacks = callbacks || {};
 
         WeixinJSBridge.invoke("getInstallState", {
-            "packageUrl":data.packageUrl || "",
-            "packageName":data.packageName || ""
+            "packageUrl": data.packageUrl || "",
+            "packageName": data.packageName || ""
         }, function (resp) {
             var msg = resp.err_msg, match = msg.match(/state:yes_?(.*)$/);
             if (match) {
@@ -491,8 +502,8 @@
     WeixinApi.sendEmail = function (data, callbacks) {
         callbacks = callbacks || {};
         WeixinJSBridge.invoke("sendEmail", {
-            "title":data.subject,
-            "content":data.body
+            "title": data.subject,
+            "content": data.body
         }, function (resp) {
             if (resp.err_msg === 'send_email:sent') {
                 callbacks.success && callbacks.success(resp);
@@ -519,10 +530,10 @@
             // 有callback的情况下，将错误信息传递到options.callback中
             if (typeof callback === 'function') {
                 callback({
-                    message:errorMessage,
-                    script:scriptURI,
-                    line:lineNumber,
-                    column:columnNumber
+                    message: errorMessage,
+                    script: scriptURI,
+                    line: lineNumber,
+                    column: columnNumber
                 });
             } else {
                 // 其他情况，都以alert方式直接提示错误信息
