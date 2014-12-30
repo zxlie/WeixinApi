@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>微信Js API Demo</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="dns-prefetch" href="http://mmbiz.qpic.cn">
+        <link rel="dns-prefetch" href="http://res.wx.qq.com">
+        <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0;">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <style type="text/css">
+            p {
+                padding: 5px 10px;
+            }
+        </style>
+        <script type="text/javascript" src="../WeixinApi.js?v=3.6"></script>
+    </head>
+    <body>
+        <p>这是一个测试页面！仅包含一些工具方法！</p>
+        <p>
+            <button id="optionMenu">WeixinApi.hideOptionMenu</button>
+        </p>
+        <p>
+            <button id="networkType">WeixinApi.getNetworkType</button>
+        </p>
+        <p>
+            <button id="imagePreview">WeixinApi.imagePreview</button>
+        </p>
+        <p>
+            <button id="closeWindow">WeixinApi.closeWindow</button>
+        </p>
+        <p>
+            <button id="scanQRCode">WeixinApi.scanQRCode</button>
+        </p>
+
+        <p>
+            <button id="getInstallState">WeixinApi.getInstallState</button>
+        </p>
+
+        <p>
+            <button id="sendEmail">WeixinApi.sendEmail</button>
+        </p>
+
+        <p>
+            <a href="?" id="refresh">点击这里刷新！！！！</a>
+        </p>
+
+        <script type="text/javascript">
+
+            // 开启Api的debug模式
+            WeixinApi.enableDebugMode();
+
+            // 给按钮增加click事件：请不要太纠结这个写法，demo而已
+            var addEvent = function(elId,listener){
+                document.getElementById(elId)
+                        .addEventListener('click',function(e){
+                            if(!window.WeixinApi || !window.WeixinJSBridge) {
+                                alert('请确认您是在微信内置浏览器中打开的，并且WeixinApi.js已正确引用');
+                                e.preventDefault();
+                                return false;
+                            }
+                            listener(this,e);
+                        },false);
+            };
+
+            // 两个Flag
+            var optionMenuOn = true;
+            var toolbarOn = true;
+
+            // optionMenu的控制
+            addEvent('optionMenu',function(el,e){
+                if(optionMenuOn) {
+                    el.innerHTML = "WeixinApi.showOptionMenu";
+                    WeixinApi.hideOptionMenu();
+                }else{
+                    el.innerHTML = "WeixinApi.hideOptionMenu";
+                    WeixinApi.showOptionMenu();
+                }
+                optionMenuOn = !optionMenuOn;
+            });
+
+            // 获取网络类型
+            addEvent('networkType',function(el,e){
+                WeixinApi.getNetworkType(function(network) {
+                    alert("当前网络类型：" + network);
+                });
+            });
+
+            // 调起客户端的图片播放组件
+            addEvent('imagePreview',function(el,e){
+                location.href = "http://www.baidufe.com/wximage?tag=%E7%BE%8E%E5%A5%B3";
+            });
+
+            // 关闭窗口
+            addEvent('closeWindow',function(el,e){
+                WeixinApi.closeWindow({
+                    success : function(resp){
+                        alert('关闭窗口成功！');
+                    },
+                    fail : function(resp){
+                        alert('关闭窗口失败');
+                    }
+                });
+            });
+
+            // 打开扫码
+            addEvent('scanQRCode',function(el,e){
+                WeixinApi.scanQRCode({
+                    success : function(resp){
+                        alert('扫描器已打开！');
+                    },
+                    fail : function(resp){
+                        alert('扫描器无法打开');
+                    }
+                });
+            });
+
+            // 判断是否安装对应的应用（需要官方打开权限）
+            addEvent("getInstallState", function(el, e) {
+                WeixinApi.getInstallState({
+                    packageName: "cn.dxy.android.aspirin",
+                    packageUrl: "dxy-aspirin"
+                }, {
+                    success: function(resp) {
+                        alert("App is installed, version " + resp.version);
+                    },
+                    fail: function(resp) {
+                        alert("Oops, something goes wrong or app is not installed.");
+                    }
+                })
+            });
+
+            // 发送邮件
+            addEvent("sendEmail", function(el, e) {
+                WeixinApi.sendEmail({
+                    subject : 'Hello world！',
+                    body : '这是一封测试邮件，Demo而已，慢慢玩儿吧！'
+                });
+            });
+
+            // 刷新
+            addEvent('refresh',function(el,e){
+                e.preventDefault();
+                location.replace('?' + Math.random(),true);
+            });
+
+            // WeixinApi初始化完成后才进行下面的动作
+            WeixinApi.ready(function(Api) {
+
+                // 有可能用户是直接用微信“扫一扫”打开的，这个情况下，optionMenu是off状态
+                // 为了方便用户测试，我先来trigger show一下
+                var elOptionMenu = document.getElementById('optionMenu');
+                elOptionMenu.click(); // 先隐藏
+                elOptionMenu.click(); // 再显示
+            });
+
+        </script>
+    </body>
+</html>

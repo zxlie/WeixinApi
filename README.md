@@ -105,6 +105,11 @@ WeixinApi.ready(function(Api) {
 
 可能有的朋友不知道appId从哪儿获取，请看这里：[如何获取appId](http://jingyan.baidu.com/article/6525d4b12af618ac7c2e9468.html)
 
+**分享的数据可以动态修改：**
+
+* 普通模式分享：分享的数据是固定的，代码请参考 [sample/sample-normal.html](https://github.com/zxlie/WeixinApi/blob/master/sample/sample-normal.html)
+* 异步模式分享：分享的数据是可以被动态修改的，代码请参考 [sample/sample-normal.html](https://github.com/zxlie/WeixinApi/blob/master/sample/sample-async.html)
+
 
 ### 2、隐藏右上角option menu入口
 ```javascript
