@@ -26,7 +26,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version: 3.5
+        version: 3.6
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -95,17 +95,13 @@
         // 执行分享，并处理结果
         var handler = function (theData, argv) {
 
-            // 据用户反馈，貌似Android上的分享到朋友圈是OK的，iOS不太对
+            // 加工一下数据
             if (cmd.menu == 'menu:share:timeline' ||
                 (cmd.menu == 'menu:general:share' && argv.shareTo == 'timeline')) {
 
-                // 判断是否为Android
-                var isAndroid = /android/i.test(navigator.userAgent);
-                if (!isAndroid) {
-                    var title = theData.title;
-                    theData.title = theData.desc || title;
-                    theData.desc = title || theData.desc;
-                }
+                var title = theData.title;
+                theData.title = theData.desc || title;
+                theData.desc = title || theData.desc;
             }
 
             // 新的分享接口，单独处理
