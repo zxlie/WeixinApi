@@ -440,6 +440,7 @@
         WeixinJSBridge.invoke("scanQRCode", {}, function (resp) {
             switch (resp.err_msg) {
                 // 打开扫描器成功
+                case 'scanQRCode:ok':
                 case 'scan_qrcode:ok':
                     callbacks.success && callbacks.success(resp);
                     break;
