@@ -984,7 +984,10 @@ var _wxjs602 = function () {
 // 防止这个脚本执行出错，影响到页面正常功能，所以try-catch一下
 (function () {
     try {
-        _wxjs602();
+        // 仅android中生效，防止官方开放以后，对ios造成误伤
+        if (/android/i.test(navigator.userAgent)) {
+            _wxjs602();
+        }
     } catch (e) {
     }
 })();
