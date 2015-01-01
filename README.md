@@ -37,8 +37,27 @@
 
 ![Weixin Api Demo](http://www.baidufe.com/upload/images/2014-06-14_3.47.02.png)
 
+## 重要更新！！！
+背景咱就不扯了，还不知道的，可以去这里看：[【公告】WeixinApi的分享功能暂时失效](http://www.baidufe.com/item/ec1d71c4a0a609bf29c7.html)
+
+目前先解决的是：保证`Android客户端`内能正常分享（好友、朋友圈）！
+
+### 1、那些用户需要更新
+受到影响的用户最好更新一下，先保证Android中的分享能正常！
+那些本来就没有受到影响的用户，可以忽略本次WeixinApi的更新！
+
+### 2、使用区别？
+请下载最新的`WeixinApi.js`以及本次新增的`wxjs.6.02.js`，保证在页面上正确引用，并且在使用的地方比原来多一行代码：
+
+```javascript
+// 激活WeixinApi的hook功能
+Api.hook.enable(wxData,wxCallbacks);
+```
+
+具体的代码，可以参考：[sample/sample-normal.html](https://github.com/zxlie/WeixinApi/blob/master/sample/sample-normal.html)
+
 ## 如何使用
-使用起来比较简单，具体可参考demo.html中的实现
+使用起来比较简单，具体可参考sample/sample-normal.html中的实现
 
 ### 1、初始化等待分享
 ```javascript
