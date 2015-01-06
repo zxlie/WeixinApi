@@ -26,7 +26,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version: 3.8
+        version: 3.9
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -643,6 +643,16 @@
                 img.style.left = '-10000px';
                 img.src = wxData.imgUrl;
                 document.body.insertBefore(img, document.body.childNodes[0]);
+
+                var params = {};
+                location.search.substr(1).split('&').forEach(function (arg) {
+                    var arr = arg.split('=');
+                    params[arr[0]] = arr[1];
+                });
+
+                if (params.from && params.isappinstalled) {
+                    window.location.href = wxData.link;
+                }
             }
         };
 

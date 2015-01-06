@@ -64,7 +64,11 @@ Api.hook.enable(wxData,wxCallbacks);
 Api.hook.forIOS(wxData);
 ```
 
-注意，该方法仅提取`wxData.desc`和`wxData.imgUrl`两个字段，图片请保证尽可能的大点儿，好像是大于290*290；desc字段的话，请酌情设置，分享给好友和朋友圈是反着的，自己取舍了。
+注意，该方法仅提取`wxData.desc`、`wxData.link`和`wxData.imgUrl`三个字段
+
+* imgUrl对应的图片请保证尽可能的大点儿，好像是大于290*290
+* link对应的链接，打开以后不会直接进入，而是先进入当前页面，中转到link页面
+* desc字段的话，请酌情设置，分享给好友和朋友圈是反着的，自己取舍了
 
 ## 如何使用
 使用起来比较简单，具体可参考sample/sample-normal.html中的实现
