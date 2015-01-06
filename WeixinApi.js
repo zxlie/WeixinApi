@@ -26,7 +26,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version: 3.7
+        version: 3.8
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -432,12 +432,17 @@
     /*
      * 打开扫描二维码
      * @param       {Object}    callbacks       回调方法
+     * @p-config    {Boolean}   needResult      是否直接获取分享后的内容
+     * @p-config    {String}    desc            扫描二维码时的描述
      * @p-config    {Function}  fail(resp)      失败
      * @p-config    {Function}  success(resp)   成功
      */
     WeixinApi.scanQRCode = function (callbacks) {
         callbacks = callbacks || {};
-        WeixinJSBridge.invoke("scanQRCode", {}, function (resp) {
+        WeixinJSBridge.invoke("scanQRCode", {
+            needResult: callbacks.needResult ? 1 : 0,
+            desc: callbacks.desc || 'WeixinApi Desc'
+        }, function (resp) {
             switch (resp.err_msg) {
                 // 打开扫描器成功
                 case 'scanQRCode:ok':
@@ -624,10 +629,28 @@
             return callback;
         };
 
+        /**
+         * iOS简单处理，直接修改页面title
+         * @param wxData
+         * @private
+         */
+        var _forIOS = function (wxData) {
+            if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+                document.title = wxData.desc;
+                var img = document.createElement('img');
+                img.style.position = 'absolute';
+                img.style.top = '-10000px';
+                img.style.left = '-10000px';
+                img.src = wxData.imgUrl;
+                document.body.insertBefore(img, document.body.childNodes[0]);
+            }
+        };
+
         return {
             enable: _enable,
             message: _message,
-            callbacks: _callback
+            callbacks: _callback,
+            forIOS: _forIOS
         };
     })();
 

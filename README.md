@@ -43,7 +43,7 @@
 目前先解决的是：保证`Android客户端`内能正常分享（好友、朋友圈）！
 
 ### 1、那些用户需要更新
-受到影响的用户最好更新一下，先保证Android中的分享能正常！
+受到影响的用户最好更新一下，先保证Android中的分享能正常！IOS下简单支持一下！
 那些本来就没有受到影响的用户，可以忽略本次WeixinApi的更新！
 
 ### 2、使用区别？
@@ -55,6 +55,16 @@ Api.hook.enable(wxData,wxCallbacks);
 ```
 
 具体的代码，可以参考：[sample/sample-normal.html](https://github.com/zxlie/WeixinApi/blob/master/sample/sample-normal.html)
+
+### 3、对iOS版本进行简单支持
+升级Api以后，增加下面这样一行代码：
+
+```javascript
+// iOS简单处理一下
+Api.hook.forIOS(wxData);
+```
+
+注意，该方法仅提取`wxData.desc`和`wxData.imgUrl`两个字段，图片请保证尽可能的大点儿，好像是大于290*290；desc字段的话，请酌情设置，分享给好友和朋友圈是反着的，自己取舍了。
 
 ## 如何使用
 使用起来比较简单，具体可参考sample/sample-normal.html中的实现
@@ -232,6 +242,20 @@ WeixinApi.ready(function(Api) {
             alert('扫描器无法打开');
         }
     });
+});
+```
+
+设定`needResult:true`，则直接获取扫描得到的内容：
+
+```javascript
+WeixinApi.scanQRCode({
+    needResult:true,
+    success : function(resp){
+        alert('扫描器到的结果：' + JSON.stringify(resp));
+    },
+    fail : function(resp){
+        alert('扫描器无法打开');
+    }
 });
 ```
 
