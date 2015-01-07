@@ -26,7 +26,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version: 3.9
+        version: 3.91
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -650,7 +650,7 @@
                     params[arr[0]] = arr[1];
                 });
 
-                if (params.from && params.isappinstalled) {
+                if (params.hasOwnProperty('from') && params.hasOwnProperty('isappinstalled')) {
                     window.location.href = wxData.link;
                 }
             }
