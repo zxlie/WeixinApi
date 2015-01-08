@@ -26,7 +26,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version: 3.91
+        version: 4.0
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -97,7 +97,7 @@
 
             // 加工一下数据
             if (cmd.menu == 'menu:share:timeline' ||
-                (cmd.menu == 'menu:general:share' && argv.shareTo == 'timeline')) {
+                (cmd.menu == 'general:share' && argv.shareTo == 'timeline')) {
 
                 var title = theData.title;
                 theData.title = theData.desc || title;
@@ -105,7 +105,7 @@
             }
 
             // 新的分享接口，单独处理
-            if (cmd.menu === 'menu:general:share') {
+            if (cmd.menu === 'general:share') {
                 // 如果是收藏操作，并且在wxCallbacks中配置了favorite为false，则不执行回调
                 if (argv.shareTo == 'favorite' || argv.scene == 'favorite') {
                     if (callbacks.favorite === false) {
@@ -113,8 +113,13 @@
                         });
                     }
                 }
-
-                argv.generalShare(theData, progress);
+                if (argv.shareTo === 'timeline') {
+                    WeixinJSBridge.invoke('shareTimeline', theData, progress);
+                } else if (argv.shareTo === 'friend') {
+                    WeixinJSBridge.invoke('sendAppMessage', theData, progress);
+                } else if (argv.shareTo === 'QQ') {
+                    WeixinJSBridge.invoke('shareQQ', theData, progress);
+                }
             } else {
                 WeixinJSBridge.invoke(cmd.action, theData, progress);
             }
@@ -268,7 +273,7 @@
      */
     WeixinApi.generalShare = function (data, callbacks) {
         _share({
-            menu: 'menu:general:share'
+            menu: 'general:share'
         }, {
             "appid": data.appId ? data.appId : '',
             "img_url": data.imgUrl,
@@ -404,9 +409,38 @@
      * @param readyCallback
      */
     WeixinApi.ready = function (readyCallback) {
+
+        /**
+         * 加一个钩子，同时解决Android和iOS下的分享问题
+         * @private
+         */
+        var _hook = function () {
+            var _WeixinJSBridge = {};
+            Object.keys(WeixinJSBridge).forEach(function (key) {
+                _WeixinJSBridge[key] = WeixinJSBridge[key];
+            });
+            Object.keys(WeixinJSBridge).forEach(function (key) {
+                if (typeof WeixinJSBridge[key] === 'function') {
+                    WeixinJSBridge[key] = function () {
+                        try {
+                            var args = arguments.length > 0 ? arguments[0] : {},
+                                runOn3rd_apis = args.__params ? args.__params.__runOn3rd_apis || [] : [];
+                            ['menu:share:timeline', 'menu:share:appmessage',
+                                'menu:share:qq', 'general:share'].forEach(function (menu) {
+                                    runOn3rd_apis.indexOf(menu) === -1 && runOn3rd_apis.push(menu);
+                                });
+                        } catch (e) {
+                        }
+                        return _WeixinJSBridge[key].apply(WeixinJSBridge, arguments);
+                    };
+                }
+            });
+        };
+
         if (readyCallback && typeof readyCallback == 'function') {
             var Api = this;
             var wxReadyFunc = function () {
+                _hook();
                 readyCallback(Api);
             };
             if (typeof window.WeixinJSBridge == "undefined") {
@@ -548,120 +582,5 @@
             }
         }
     };
-
-
-    /**
-     * 实在是没办法了，只能在微信内置的分享功能中加一个钩子，强行注入，并修改需要分享的内容
-     * 注意，仅Android可用，并且也不支持async模式了，暂时先这么用着吧，各位亲，总比不能用要好
-     */
-    WeixinApi.hook = (function () {
-        var _wxData;
-        var _callbacks;
-
-        /**
-         * 开启WeixinApi的hook功能
-         */
-        var _enable = function (wxData, wxCallbacks) {
-            _wxData = wxData;
-
-            // 分享过程中的一些回调
-            _callbacks = function (resp) {
-                var callbacks = wxCallbacks || {};
-                switch (true) {
-                    // 用户取消
-                    case /\:cancel$/i.test(resp.err_msg) :
-                        callbacks.cancel && callbacks.cancel(resp);
-                        break;
-                    // 发送成功
-                    case /\:(confirm|ok)$/i.test(resp.err_msg):
-                        callbacks.confirm && callbacks.confirm(resp);
-                        break;
-                    // fail　发送失败
-                    case /\:fail$/i.test(resp.err_msg) :
-                    default:
-                        callbacks.fail && callbacks.fail(resp);
-                        break;
-                }
-                // 无论成功失败都会执行的回调
-                callbacks.all && callbacks.all(resp);
-            };
-        };
-
-        /**
-         * 对内置的sendMessage加钩子
-         * @param message
-         */
-        var _message = function (message) {
-            var theData = _extend(message['__params'], _wxData);
-            theData.img_url = theData.imgUrl || theData.img_url;
-            delete theData.imgUrl;
-
-            switch (message['__event_id']) {
-                case 'menu:share:timeline':
-                    var t = theData.title;
-                    theData.title = theData.desc || t;
-                    theData.desc = t || theData.desc;
-                    message['__params'] = theData;
-                    break;
-                case 'menu:share:appmessage':
-                case 'menu:share:qq':
-                case 'menu:share:weiboApp':
-                    message['__params'] = theData;
-                    break;
-            }
-        };
-
-        /**
-         * 给各分享的回调方法加钩子
-         * @param shareType
-         * @param callback
-         */
-        var _callback = function (shareType, callback) {
-            switch (shareType) {
-                case 'sendAppMessage':
-                case 'shareTimeline':
-                case 'shareWeibo':
-                    callback = !callback ? _callbacks : function (resp) {
-                        callback(resp) && _callbacks(resp);
-                    };
-                    break;
-            }
-            return callback;
-        };
-
-        /**
-         * iOS简单处理，直接修改页面title
-         * @param wxData
-         * @private
-         */
-        var _forIOS = function (wxData) {
-            if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
-                document.title = wxData.desc;
-                var img = document.createElement('img');
-                img.style.position = 'absolute';
-                img.style.top = '-10000px';
-                img.style.left = '-10000px';
-                img.src = wxData.imgUrl;
-                document.body.insertBefore(img, document.body.childNodes[0]);
-
-                var params = {};
-                location.search.substr(1).split('&').forEach(function (arg) {
-                    var arr = arg.split('=');
-                    params[arr[0]] = arr[1];
-                });
-
-                if (params.hasOwnProperty('from') && params.hasOwnProperty('isappinstalled')) {
-                    window.location.href = wxData.link;
-                }
-            }
-        };
-
-        return {
-            enable: _enable,
-            message: _message,
-            callbacks: _callback,
-            forIOS: _forIOS
-        };
-    })();
 
 })(window);

@@ -15,8 +15,7 @@
             }
         </style>
 
-        <script type="text/javascript" src="../wxjs.6.02.js?v=2"></script>
-        <script type="text/javascript" src="../WeixinApi.js?v=3.9"></script>
+        <script type="text/javascript" src="../WeixinApi.js?v=4.0"></script>
     </head>
     <body>
         <p>这是一个测试页面！请直接分享到微信好友、朋友圈、腾讯微博看效果吧！（async为false，即：分享过程中，wxData是固定的，不会被修改）</p>
@@ -103,12 +102,6 @@
 
                 // iOS上，可以直接调用这个API进行分享，一句话搞定
                 Api.generalShare(wxData,wxCallbacks);
-
-                // 激活WeixinApi的hook功能
-                Api.hook.enable(wxData,wxCallbacks);
-
-                // iOS简单处理
-                Api.hook.forIOS(wxData);
             });
 
         </script>
