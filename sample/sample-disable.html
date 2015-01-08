@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>微信Js API Demo：禁止分享</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="dns-prefetch" href="http://mmbiz.qpic.cn">
+        <link rel="dns-prefetch" href="http://res.wx.qq.com">
+        <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0;">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <style type="text/css">
+            p {
+                padding: 5px 10px;
+            }
+        </style>
+
+        <script type="text/javascript" src="../WeixinApi.js?v=4.1"></script>
+    </head>
+    <body>
+        <p>这是一个测试页面！禁止分享！</p>
+
+        <p>
+            <a href="?" id="refresh">点击这里刷新！！！！</a>
+        </p>
+
+        <script type="text/javascript">
+
+            // 开启Api的debug模式
+            WeixinApi.enableDebugMode();
+
+            // 给按钮增加click事件：请不要太纠结这个写法，demo而已
+            var addEvent = function(elId,listener){
+                document.getElementById(elId)
+                        .addEventListener('click',function(e){
+                            if(!window.WeixinApi || !window.WeixinJSBridge) {
+                                alert('请确认您是在微信内置浏览器中打开的，并且WeixinApi.js已正确引用');
+                                e.preventDefault();
+                                return false;
+                            }
+                            listener(this,e);
+                        },false);
+            };
+
+            // 刷新
+            addEvent('refresh',function(el,e){
+                e.preventDefault();
+                location.replace('?' + Math.random(),true);
+            });
+
+            // 先对Api进行初始化
+            WeixinApi.ready(function(Api) {
+                // 禁止分享
+                Api.disabledShare(function(){
+                    alert('当前页面禁止分享！');
+                });
+            });
+
+        </script>
+    </body>
+</html>

@@ -14,6 +14,7 @@
     * [8、打开扫描二维码](#user-content-8打开扫描二维码)
     * [9、开启WeixinApi的错误监控](#user-content-9开启weixinapi的错误监控)
     * [10、发送电子邮件](#user-content-10发送电子邮件)
+    * [11、禁止用户分享](#user-content-11禁止用户分享)
 * [常见问题](#user-content-常见问题)
 * [其他](#user-content-其他)
 
@@ -32,6 +33,7 @@
     12、支持WeixinApi的错误监控
     13、检测应用程序是否已经安装（需要官方开通权限）
     14、发送电子邮件
+    15、禁止用户分享
 
 你可以用微信的“扫一扫”来打开下面这个二维码体验一把：
 
@@ -259,6 +261,19 @@ WeixinApi.sendEmail({
     // 注意这里可不要轻易alert，会卡死的。。。
 });
 ```
+
+### 11、禁止用户分享
+```javascript
+// 先对Api进行初始化
+WeixinApi.ready(function(Api) {
+    // 禁止分享
+    Api.disabledShare(function(){
+        alert('当前页面禁止分享！');
+    });
+});
+```
+
+代码请参考 [sample/sample-normal.html](https://github.com/zxlie/WeixinApi/blob/master/sample/sample-disable.html)
 
 ## 常见问题
 ### 1、用了这个API怎么没生效

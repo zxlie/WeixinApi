@@ -15,6 +15,7 @@
  * 12、支持WeixinApi的错误监控
  * 13、检测应用程序是否已经安装（需要官方开通权限）
  * 14、发送电子邮件
+ * 15、禁止用户分享
  *
  * @author zhaoxianlie(http://www.baidufe.com)
  */
@@ -26,7 +27,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version: 4.0
+        version: 4.1
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -119,6 +120,8 @@
                     WeixinJSBridge.invoke('sendAppMessage', theData, progress);
                 } else if (argv.shareTo === 'QQ') {
                     WeixinJSBridge.invoke('shareQQ', theData, progress);
+                }else if (argv.shareTo === 'weibo') {
+                    WeixinJSBridge.invoke('shareWeibo', theData, progress);
                 }
             } else {
                 WeixinJSBridge.invoke(cmd.action, theData, progress);
@@ -286,6 +289,23 @@
     };
 
     /**
+     * 设置页面禁止分享：包括朋友圈、好友、腾讯微博、qq
+     * @param callback
+     */
+    WeixinApi.disabledShare = function (callback) {
+        callback = callback || function () {
+            alert('当前页面禁止分享！');
+        };
+        ['menu:share:timeline', 'menu:share:appmessage', 'menu:share:qq',
+            'menu:share:weibo', 'general:share'].forEach(function (menu) {
+                WeixinJSBridge.on(menu, function () {
+                    callback();
+                    return false;
+                });
+            });
+    };
+
+    /**
      * 加关注（此功能只是暂时先加上，不过因为权限限制问题，不能用，如果你的站点是部署在*.qq.com下，也许可行）
      * @param       {String}    appWeixinId     微信公众号ID
      * @param       {Object}    callbacks       回调方法
@@ -425,7 +445,7 @@
                         try {
                             var args = arguments.length > 0 ? arguments[0] : {},
                                 runOn3rd_apis = args.__params ? args.__params.__runOn3rd_apis || [] : [];
-                            ['menu:share:timeline', 'menu:share:appmessage',
+                            ['menu:share:timeline', 'menu:share:appmessage', 'menu:share:weibo',
                                 'menu:share:qq', 'general:share'].forEach(function (menu) {
                                     runOn3rd_apis.indexOf(menu) === -1 && runOn3rd_apis.push(menu);
                                 });
