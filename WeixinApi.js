@@ -27,7 +27,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version: 4.1
+        version: 4.2
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -105,26 +105,28 @@
                 theData.desc = title || theData.desc;
             }
 
-            // 新的分享接口，单独处理
-            if (cmd.menu === 'general:share') {
-                // 如果是收藏操作，并且在wxCallbacks中配置了favorite为false，则不执行回调
-                if (argv.shareTo == 'favorite' || argv.scene == 'favorite') {
-                    if (callbacks.favorite === false) {
-                        return argv.generalShare(theData, function () {
-                        });
-                    }
-                }
-                if (argv.shareTo === 'timeline') {
-                    WeixinJSBridge.invoke('shareTimeline', theData, progress);
-                } else if (argv.shareTo === 'friend') {
-                    WeixinJSBridge.invoke('sendAppMessage', theData, progress);
-                } else if (argv.shareTo === 'QQ') {
-                    WeixinJSBridge.invoke('shareQQ', theData, progress);
-                }else if (argv.shareTo === 'weibo') {
-                    WeixinJSBridge.invoke('shareWeibo', theData, progress);
+            // 如果是收藏操作，并且在wxCallbacks中配置了favorite为false，则不执行回调
+            if (argv && (argv.shareTo == 'favorite' || argv.scene == 'favorite')) {
+                if (callbacks.favorite === false) {
+                    WeixinJSBridge.invoke('sendAppMessage', theData, new Function());
+                } else {
+                    WeixinJSBridge.invoke(cmd.action, theData, progress);
                 }
             } else {
-                WeixinJSBridge.invoke(cmd.action, theData, progress);
+                // 新的分享接口，单独处理
+                if (cmd.menu === 'general:share') {
+                    if (argv.shareTo === 'timeline') {
+                        WeixinJSBridge.invoke('shareTimeline', theData, progress);
+                    } else if (argv.shareTo === 'friend') {
+                        WeixinJSBridge.invoke('sendAppMessage', theData, progress);
+                    } else if (argv.shareTo === 'QQ') {
+                        WeixinJSBridge.invoke('shareQQ', theData, progress);
+                    } else if (argv.shareTo === 'weibo') {
+                        WeixinJSBridge.invoke('shareWeibo', theData, progress);
+                    }
+                } else {
+                    WeixinJSBridge.invoke(cmd.action, theData, progress);
+                }
             }
         };
 
@@ -495,7 +497,8 @@
         callbacks = callbacks || {};
         WeixinJSBridge.invoke("scanQRCode", {
             needResult: callbacks.needResult ? 1 : 0,
-            desc: callbacks.desc || 'WeixinApi Desc'
+            desc: callbacks.desc || 'WeixinApi Desc',
+            scanType: ["qrCode", "barCode"]
         }, function (resp) {
             switch (resp.err_msg) {
                 // 打开扫描器成功

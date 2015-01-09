@@ -14,7 +14,7 @@
                 padding: 5px 10px;
             }
         </style>
-        <script type="text/javascript" src="../WeixinApi.js?v=3.7"></script>
+        <script type="text/javascript" src="../WeixinApi.js?v=4.2"></script>
     </head>
     <body>
         <p>这是一个测试页面！仅包含一些工具方法！</p>
@@ -112,7 +112,7 @@
                         alert('扫描器到的结果：' + JSON.stringify(resp));
                     },
                     fail : function(resp){
-                        alert('扫描器无法打开');
+                        alert('扫描器无法打开' + JSON.stringify(resp));
                     }
                 });
             });
