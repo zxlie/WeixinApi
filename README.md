@@ -18,7 +18,6 @@
 ## 目录
 * [快速使用](#user-content-快速使用)
 * [详细Api列表](#user-content-详细api列表)
-    * [0、初始化等待分享](#user-content-1初始化等待分享)
     * [1、初始化等待分享](#user-content-1初始化等待分享)
     * [2、隐藏右上角option menu入口](#user-content-2隐藏右上角option-menu入口)
     * [3、隐藏底部工具栏](#user-content-3隐藏底部工具栏)
@@ -26,9 +25,9 @@
     * [5、调起客户端图片播放组件](#user-content-5调起客户端图片播放组件)
     * [6、关掉当前微信公众页面窗口](#user-content-6关掉当前微信公众页面窗口)
     * [7、判断当前网页是否在微信内置浏览器中打开](#user-content-7判断当前网页是否在微信内置浏览器中打开)
-    * [8、开启WeixinApi的错误监控](#user-content-9开启weixinapi的错误监控)
-    * [9、发送电子邮件](#user-content-10发送电子邮件)
-    * [10、禁止用户分享](#user-content-11禁止用户分享)
+    * [8、开启WeixinApi的错误监控](#user-content-8开启weixinapi的错误监控)
+    * [9、发送电子邮件](#user-content-9发送电子邮件)
+    * [10、禁止用户分享](#user-content-10禁止用户分享)
 * [常见问题](#user-content-常见问题)
 * [其他](#user-content-其他)
 
