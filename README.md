@@ -1,9 +1,24 @@
 微信公众平台Js API（WeixinApi）
 =======================================
 
+## 关于WeixinApi
+### 1、WeixinApi为何诞生
+以前顺便玩儿了下微信公众账号，做Web前端开发的，都对页面脚本充满好奇，所以研究了下，放到[`Blog`](http://www.baidufe.com)上，
+也正因为微信官方一直没有放出正式的Api提供给用户来用，所以大量的用户到我blog上去询问`WeixinJSBridge`相关的技术点，索性我就整理了一下，
+起个名字叫`WeixinApi`开源到github来，提供给大家使用！
+
+### 2、免责声明
+此Api为`非官方`版，由于官方的限制，继续使用此Api还有可能会出现一些意向不到的问题，一切后果请自行承担！
+
+### 3、WeixinApi可能停止更新
+目前官方已经出了正式版本的SDK，详情可见[微信JS-SDK说明文档](http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html),
+所以大家还是尽早迁移到官方版本吧，这对大家来说是好事，以后出什么问题，官方渠道应该都会第一时间给出解决方案，稳定很多，也不至于经常被黑！
+本API可能以后就不会频繁更新了，各位知晓！
+
 ## 目录
-* [API能实现什么](#user-content-api能实现什么)
-* [如何使用？](#user-content-如何使用)
+* [快速使用](#user-content-快速使用)
+* [详细Api列表](#user-content-详细api列表)
+    * [0、初始化等待分享](#user-content-1初始化等待分享)
     * [1、初始化等待分享](#user-content-1初始化等待分享)
     * [2、隐藏右上角option menu入口](#user-content-2隐藏右上角option-menu入口)
     * [3、隐藏底部工具栏](#user-content-3隐藏底部工具栏)
@@ -11,35 +26,65 @@
     * [5、调起客户端图片播放组件](#user-content-5调起客户端图片播放组件)
     * [6、关掉当前微信公众页面窗口](#user-content-6关掉当前微信公众页面窗口)
     * [7、判断当前网页是否在微信内置浏览器中打开](#user-content-7判断当前网页是否在微信内置浏览器中打开)
-    * [8、打开扫描二维码](#user-content-8打开扫描二维码)
-    * [9、开启WeixinApi的错误监控](#user-content-9开启weixinapi的错误监控)
-    * [10、发送电子邮件](#user-content-10发送电子邮件)
-    * [11、禁止用户分享](#user-content-11禁止用户分享)
+    * [8、开启WeixinApi的错误监控](#user-content-9开启weixinapi的错误监控)
+    * [9、发送电子邮件](#user-content-10发送电子邮件)
+    * [10、禁止用户分享](#user-content-11禁止用户分享)
 * [常见问题](#user-content-常见问题)
 * [其他](#user-content-其他)
 
-## API能实现什么
-	1、分享到微信朋友圈
-	2、分享给微信好友
-	3、分享到腾讯微博
-	4、新的分享接口，包含朋友圈、好友、微博的分享（for iOS）
-	5、隐藏/显示右上角的菜单入口
-	6、隐藏/显示底部浏览器工具栏
-	7、获取当前的网络状态
-	8、调起微信客户端的图片播放组件
-	9、关闭公众平台Web页面
-    10、判断当前网页是否在微信内置浏览器中打开
-    11、增加打开扫描二维码
-    12、支持WeixinApi的错误监控
-    13、检测应用程序是否已经安装（需要官方开通权限）
-    14、发送电子邮件
-    15、禁止用户分享
-
-你可以用微信的“扫一扫”来打开下面这个二维码体验一把：
+你可以用微信的“扫一扫”来打开下面这个二维码体验一下：
 
 ![Weixin Api Demo](http://www.baidufe.com/upload/images/2014-06-14_3.47.02.png)
 
-## 如何使用
+## 快速使用
+```javascript
+// 定义微信分享的数据
+var wxData = {
+    "appId": "", // 服务号可以填写appId
+    "imgUrl" : 'http://photocdn.sohu.com/20130122/Img364302298.jpg',
+    "link" : 'http://www.baidufe.com',
+    "desc" : '使用警告：此Api非官方版本，请各位尽量将分享功能迁移至腾讯官方版，会更稳定些！',
+    "title" : "欢迎使用WeixinApi"
+};
+
+// 分享的回调
+var wxCallbacks = {
+    // 收藏操作是否触发回调，默认是开启的
+    favorite : false,
+
+    // 分享操作开始之前
+    ready : function() {
+        // 你可以在这里对分享的数据进行重组
+        alert("准备分享");
+    },
+    // 分享被用户自动取消
+    cancel : function(resp) {
+        // 你可以在你的页面上给用户一个小Tip，为什么要取消呢？
+        alert("分享被取消，msg=" + resp.err_msg);
+    },
+    // 分享失败了
+    fail : function(resp) {
+        // 分享失败了，是不是可以告诉用户：不要紧，可能是网络问题，一会儿再试试？
+        alert("分享失败，msg=" + resp.err_msg);
+    },
+    // 分享成功
+    confirm : function(resp) {
+        // 分享成功了，我们是不是可以做一些分享统计呢？
+        alert("分享成功，msg=" + resp.err_msg);
+    },
+    // 整个分享过程结束
+    all : function(resp,shareTo) {
+        // 如果你做的是一个鼓励用户进行分享的产品，在这里是不是可以给用户一些反馈了？
+        alert("分享" + (shareTo ? "到" + shareTo : "") + "结束，msg=" + resp.err_msg);
+    }
+};
+// 自定义分享到：微信好友、朋友圈、腾讯微博、QQ好友
+WeixinApi.share(wxData,wxCallbacks);
+```
+
+可下载源码，部署sample/sample-new.html进行测试
+
+## 详细Api列表
 使用起来比较简单，具体可参考sample/sample-normal.html中的实现
 
 ### 1、初始化等待分享
@@ -55,8 +100,8 @@ WeixinApi.ready(function(Api) {
         "appId": "", // 服务号可以填写appId
         "imgUrl" : 'http://www.baidufe.com/fe/blog/static/img/weixin-qrcode-2.jpg',
         "link" : 'http://www.baidufe.com',
-        "desc" : '大家好，我是Alien，Web前端&Android客户端码农，喜欢技术上的瞎倒腾！欢迎多交流',
-        "title" : "大家好，我是赵先烈"
+        "desc" : '使用警告：此Api非官方版本，请各位尽量将分享功能迁移至腾讯官方版，会更稳定些！',
+        "title" : "欢迎使用WeixinApi"
     };
 
     // 分享的回调
@@ -203,36 +248,7 @@ WeixinApi.ready(function(Api) {
 
 ```
 
-### 8、打开扫描二维码
-```javascript
-WeixinApi.ready(function(Api) {
-	// 扫描二维码
-    WeixinApi.scanQRCode({
-        success : function(resp){
-            alert('扫描器已打开！');
-        },
-        fail : function(resp){
-            alert('扫描器无法打开');
-        }
-    });
-});
-```
-
-设定`needResult:true`，则直接获取扫描得到的内容：
-
-```javascript
-WeixinApi.scanQRCode({
-    needResult:true,
-    success : function(resp){
-        alert('扫描器到的结果：' + JSON.stringify(resp));
-    },
-    fail : function(resp){
-        alert('扫描器无法打开');
-    }
-});
-```
-
-### 9、开启WeixinApi的错误监控
+### 8、开启WeixinApi的错误监控
 注意，这句代码务必放在WeixinApi.ready之前；上线的时候，根据实际需要，可删掉它
 
 ```javascript
@@ -252,7 +268,7 @@ WeixinApi.enableDebugMode(function(errObj){
 // 当然，你还可以做一件事：把这些错误信息上报到服务器
 ```
 
-### 10、发送电子邮件
+### 9、发送电子邮件
 ```javascript
 WeixinApi.sendEmail({
     subject : '邮件标题',
@@ -262,7 +278,7 @@ WeixinApi.sendEmail({
 });
 ```
 
-### 11、禁止用户分享
+### 10、禁止用户分享
 ```javascript
 // 先对Api进行初始化
 WeixinApi.ready(function(Api) {

@@ -14,7 +14,7 @@
                 padding: 5px 10px;
             }
         </style>
-        <script type="text/javascript" src="../WeixinApi.js?v=4.2"></script>
+        <script type="text/javascript" src="../WeixinApi.js?v=4.3"></script>
     </head>
     <body>
         <p>这是一个测试页面！仅包含一些工具方法！</p>
@@ -29,13 +29,6 @@
         </p>
         <p>
             <button id="closeWindow">WeixinApi.closeWindow</button>
-        </p>
-        <p>
-            <button id="scanQRCode">WeixinApi.scanQRCode</button>
-        </p>
-
-        <p>
-            <button id="getInstallState">WeixinApi.getInstallState</button>
         </p>
 
         <p>
@@ -102,34 +95,6 @@
                         alert('关闭窗口失败');
                     }
                 });
-            });
-
-            // 打开扫码
-            addEvent('scanQRCode',function(el,e){
-                WeixinApi.scanQRCode({
-                    needResult:true,
-                    success : function(resp){
-                        alert('扫描器到的结果：' + JSON.stringify(resp));
-                    },
-                    fail : function(resp){
-                        alert('扫描器无法打开' + JSON.stringify(resp));
-                    }
-                });
-            });
-
-            // 判断是否安装对应的应用（需要官方打开权限）
-            addEvent("getInstallState", function(el, e) {
-                WeixinApi.getInstallState({
-                    packageName: "cn.dxy.android.aspirin",
-                    packageUrl: "dxy-aspirin"
-                }, {
-                    success: function(resp) {
-                        alert("App is installed, version " + resp.version);
-                    },
-                    fail: function(resp) {
-                        alert("Oops, something goes wrong or app is not installed.");
-                    }
-                })
             });
 
             // 发送邮件

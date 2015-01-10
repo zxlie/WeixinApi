@@ -4,18 +4,15 @@
  * 1、分享到微信朋友圈
  * 2、分享给微信好友
  * 3、分享到腾讯微博
- * 4、新的分享接口，包含朋友圈、好友、微博的分享（for iOS）
- * 5、隐藏/显示右上角的菜单入口
- * 6、隐藏/显示底部浏览器工具栏
- * 7、获取当前的网络状态
- * 8、调起微信客户端的图片播放组件
- * 9、关闭公众平台Web页面
- * 10、判断当前网页是否在微信内置浏览器中打开
- * 11、增加打开扫描二维码
- * 12、支持WeixinApi的错误监控
- * 13、检测应用程序是否已经安装（需要官方开通权限）
- * 14、发送电子邮件
- * 15、禁止用户分享
+ * 4、隐藏/显示右上角的菜单入口
+ * 5、隐藏/显示底部浏览器工具栏
+ * 6、获取当前的网络状态
+ * 7、调起微信客户端的图片播放组件
+ * 8、关闭公众平台Web页面
+ * 9、判断当前网页是否在微信内置浏览器中打开
+ * 10、支持WeixinApi的错误监控
+ * 11、发送电子邮件
+ * 12、禁止用户分享
  *
  * @author zhaoxianlie(http://www.baidufe.com)
  */
@@ -27,7 +24,7 @@
      * 定义WeixinApi
      */
     var WeixinApi = {
-        version: 4.2
+        version: 4.3
     };
 
     // 将WeixinApi暴露到window下：全局可使用，对旧版本向下兼容
@@ -232,7 +229,6 @@
         }, callbacks);
     };
 
-
     /**
      * 分享到腾讯微博
      * @param       {Object}    data       待分享的信息
@@ -305,29 +301,6 @@
                     return false;
                 });
             });
-    };
-
-    /**
-     * 加关注（此功能只是暂时先加上，不过因为权限限制问题，不能用，如果你的站点是部署在*.qq.com下，也许可行）
-     * @param       {String}    appWeixinId     微信公众号ID
-     * @param       {Object}    callbacks       回调方法
-     * @p-config    {Function}  fail(resp)      失败
-     * @p-config    {Function}  confirm(resp)   成功
-     */
-    WeixinApi.addContact = function (appWeixinId, callbacks) {
-        callbacks = callbacks || {};
-        WeixinJSBridge.invoke("addContact", {
-            webtype: "1",
-            username: appWeixinId
-        }, function (resp) {
-            var success = !resp.err_msg || "add_contact:ok" == resp.err_msg
-                || "add_contact:added" == resp.err_msg;
-            if (success) {
-                callbacks.success && callbacks.success(resp);
-            } else {
-                callbacks.fail && callbacks.fail(resp);
-            }
-        })
     };
 
     /**
@@ -485,68 +458,6 @@
         return /MicroMessenger/i.test(navigator.userAgent);
     };
 
-    /*
-     * 打开扫描二维码
-     * @param       {Object}    callbacks       回调方法
-     * @p-config    {Boolean}   needResult      是否直接获取分享后的内容
-     * @p-config    {String}    desc            扫描二维码时的描述
-     * @p-config    {Function}  fail(resp)      失败
-     * @p-config    {Function}  success(resp)   成功
-     */
-    WeixinApi.scanQRCode = function (callbacks) {
-        callbacks = callbacks || {};
-        WeixinJSBridge.invoke("scanQRCode", {
-            needResult: callbacks.needResult ? 1 : 0,
-            desc: callbacks.desc || 'WeixinApi Desc',
-            scanType: ["qrCode", "barCode"]
-        }, function (resp) {
-            switch (resp.err_msg) {
-                // 打开扫描器成功
-                case 'scanQRCode:ok':
-                case 'scan_qrcode:ok':
-                    callbacks.success && callbacks.success(resp);
-                    break;
-
-                // 打开扫描器失败
-                default :
-                    callbacks.fail && callbacks.fail(resp);
-                    break;
-            }
-        });
-    };
-
-    /**
-     * 检测应用程序是否已安装
-     *         by mingcheng 2014-10-17
-     *
-     * @param       {Object}    data               应用程序的信息
-     * @p-config    {String}    packageUrl      应用注册的自定义前缀，如 xxx:// 就取 xxx
-     * @p-config    {String}    packageName        应用的包名
-     *
-     * @param       {Object}    callbacks       相关回调方法
-     * @p-config    {Function}  fail(resp)      失败
-     * @p-config    {Function}  success(resp)   成功，如果有对应的版本信息，则写入到 resp.version 中
-     * @p-config    {Function}  all(resp)       无论成功失败都会执行的回调
-     */
-    WeixinApi.getInstallState = function (data, callbacks) {
-        callbacks = callbacks || {};
-
-        WeixinJSBridge.invoke("getInstallState", {
-            "packageUrl": data.packageUrl || "",
-            "packageName": data.packageName || ""
-        }, function (resp) {
-            var msg = resp.err_msg, match = msg.match(/state:yes_?(.*)$/);
-            if (match) {
-                resp.version = match[1] || "";
-                callbacks.success && callbacks.success(resp);
-            } else {
-                callbacks.fail && callbacks.fail(resp);
-            }
-
-            callbacks.all && callbacks.all(resp);
-        });
-    };
-
     /**
      * 发送邮件
      * @param       {Object}  data      邮件初始内容
@@ -606,4 +517,24 @@
         }
     };
 
+    /**
+     * 通用分享，一种简便的写法
+     * @param wxData
+     * @param wxCallbacks
+     */
+    WeixinApi.share = function (wxData, wxCallbacks) {
+        WeixinApi.ready(function (Api) {
+            // 用户点开右上角popup菜单后，点击分享给好友，会执行下面这个代码
+            Api.shareToFriend(wxData, wxCallbacks);
+
+            // 点击分享到朋友圈，会执行下面这个代码
+            Api.shareToTimeline(wxData, wxCallbacks);
+
+            // 点击分享到腾讯微博，会执行下面这个代码
+            Api.shareToWeibo(wxData, wxCallbacks);
+
+            // 分享到各渠道
+            Api.generalShare(wxData, wxCallbacks);
+        });
+    };
 })(window);
