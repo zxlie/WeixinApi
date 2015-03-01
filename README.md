@@ -154,7 +154,7 @@ WeixinApi.ready(function(Api) {
 **分享的数据可以动态修改：**
 
 * 普通模式分享：分享的数据是固定的，代码请参考 [sample/sample-normal.html](https://github.com/zxlie/WeixinApi/blob/master/sample/sample-normal.html)
-* 异步模式分享：分享的数据是可以被动态修改的，代码请参考 [sample/sample-normal.html](https://github.com/zxlie/WeixinApi/blob/master/sample/sample-async.html)
+* 异步模式分享：分享的数据是可以被动态修改的，代码请参考 [sample/sample-async.html](https://github.com/zxlie/WeixinApi/blob/master/sample/sample-async.html)
 
 
 ### 2、隐藏右上角option menu入口
