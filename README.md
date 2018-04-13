@@ -33,7 +33,7 @@
 
 你可以用微信的“扫一扫”来打开下面这个二维码体验一下：
 
-![Weixin Api Demo](http://www.baidufe.com/upload/images/2014-06-14_3.47.02.png)
+![Weixin Api Demo](/img/2014-06-14_3.47.02.png)
 
 ## 快速使用
 ```javascript
@@ -320,4 +320,4 @@ WeixinApi.ready(function(Api) {
 鄙人目前在美丽说商业产品前端团队，队里缺靠谱的FE，欢迎推荐或自荐：http://www.baidufe.com/item/25ea3376a893619eea8c.html
 
 ### 3、如果你觉得这个Api对你有用：
-![alien-alipay-qrcode-256.png](http://www.baidufe.com/upload/images/2014-11-03_21-19-40_5.png)
+![alien-alipay-qrcode-256.png](/img/2014-11-03_21-19-40_5.png)
