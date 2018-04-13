@@ -316,8 +316,6 @@ WeixinApi.ready(function(Api) {
 
 注意：这只是发烧版本，非微信官方出品！有问题可大家一起来讨论，我很乐意与大家一起来完善这个API。
 
-### 2、招聘广告
-鄙人目前在美丽说商业产品前端团队，队里缺靠谱的FE，欢迎推荐或自荐：http://www.baidufe.com/item/25ea3376a893619eea8c.html
 
 ### 3、如果你觉得这个Api对你有用：
 ![alien-alipay-qrcode-256.png](/img/2014-11-03_21-19-40_5.png)
